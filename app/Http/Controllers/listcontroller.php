@@ -11,10 +11,12 @@ class listcontroller extends Controller
 {
   public function index(){
    $list = Ujian::orderBy('id','desc')->get();
-   $a = Rating::all()->pluck('ujian_id')->toArray();
+   $a = Rating::all();
+   $ratingArr = $a->pluck('ujian_id');
    return view('after.list',[
       'lists'=> $list,
-      'ratings' => $a 
+      'ratings' => $a,
+      'ratingArr' => $ratingArr,
    ]);
 }
 }

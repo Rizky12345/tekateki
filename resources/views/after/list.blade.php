@@ -19,12 +19,27 @@
 						<div class="column is-6"><small>{{ $list->user->name }}</small></div>
 						<div class="column"><small>{{ $list->mapel->mapel }}</small></div>
 						<div class="column"><strong>rating: 
+							@php
+$a = 0;
+$b = 0;
+$c = [];
+							@endphp
+							@foreach($ratings as $rating)
+								@if($rating->ujian_id == $list->id)
+									@php
+										
+										array_push($c, $rating->rating);
 
-							
-							@if(in_array($list->id, $ratings))
-							@dd($ratings)
-							@endif
-							
+										$a = $a+$rating->rating;
+										$b++;
+
+									@endphp
+									
+		
+								@endif
+
+							@endforeach
+							@dump($a/count($c))
 						</strong></div>
 					</div>
 				</div>
