@@ -41,10 +41,17 @@ Route::post('login/process', [authcontroller::class, 'authenticate']);
 Route::post('register/process', [authcontroller::class, 'register']);
 
 Route::group(['prefix'=>'user', 'middleware'=>'auth'],function(){
-    Route::get('/list', [listcontroller::class, 'index']);
-    Route::get('/list/accept', [acceptcontroller::class, 'index']);
-    Route::post('/logout/process', [authcontroller::class, 'logout']);
-    Route::get('/list/accept/choice', [acceptcontroller::class, 'choice']);
-    Route::post('/list/accept/simpanajax', [acceptcontroller::class, 'store']);
-    Route::get('/list/accept/choice/essay',[acceptcontroller::class, 'essay']);
+    Route::group(['middleware'=>'sessionexist'],function(){
+        Route::get('/list', [listcontroller::class, 'index']);
+        Route::get('/list/accept', [acceptcontroller::class, 'index']);
+        Route::get('/list/accept/choice', [acceptcontroller::class, 'redirect_choice']);
+        Route::post('/logout/process', [authcontroller::class, 'logout']);
+    });
+    Route::group(['prefix'=>'accept', 'middleware'=>'accept'],function(){
+        Route::get('/{random}', [acceptcontroller::class, 'choice']);
+        Route::get('/{random}/destroy', [acceptcontroller::class, 'destroy']);
+        Route::post('/list/accept/simpanajax', [acceptcontroller::class, 'store']);
+
+    });
+
 });

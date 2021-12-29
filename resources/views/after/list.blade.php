@@ -20,26 +20,18 @@
 						<div class="column"><small>{{ $list->mapel->mapel }}</small></div>
 						<div class="column"><strong>rating: 
 							@php
-$a = 0;
-$b = 0;
-$c = [];
+							$a = 0;
+							$b = 0;
 							@endphp
 							@foreach($ratings as $rating)
-								@if($rating->ujian_id == $list->id)
-									@php
-										
-										array_push($c, $rating->rating);
-
-										$a = $a+$rating->rating;
-										$b++;
-
-									@endphp
-									
-		
-								@endif
-
+							@if($rating->ujian_id == $list->id)
+							@php
+							$a = $a+$rating->rating;
+							$b++;
+							@endphp
+							@endif
 							@endforeach
-							@dump($a/count($c))
+							{{ $a/$b }}
 						</strong></div>
 					</div>
 				</div>

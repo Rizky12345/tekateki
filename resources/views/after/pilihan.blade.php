@@ -41,6 +41,7 @@
 						Kuda
 					</label><br>
 				</div>
+				<a href="{{ session()->get("accept") }}/destroy"><button class="button is-dark">selesai</button></a>
 			</div>
 		</div>
 	</div>

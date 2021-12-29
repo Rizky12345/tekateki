@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\jawab;
 use App\Models\soal;
 use App\Models\pilihan;
+use Illuminate\Support\Str;
 
 class acceptcontroller extends Controller
 {
@@ -15,8 +16,12 @@ class acceptcontroller extends Controller
 			"link" => "../../"
 		]);
 	}
+	public function redirect_choice(Request $request){
+		$request->session()->put('accept', Str::random(30));
+
+		return redirect('user/accept/'.$request->session()->get("accept"));
+	}
 	public function choice(pilihan $pilihan){
-		dd($pilihan->all());
 		return view('after/pilihan',[
 			"title" => "Soal",
 			"link" => "../../../",
@@ -35,5 +40,10 @@ class acceptcontroller extends Controller
 		$save->jawaban = $request['jawaban'];
 		$save->save();
 		return $save->jawaban;
+	}
+	public function destroy(Request $request){
+		$request->session()->forget("accept");
+
+		return redirect('user/list');
 	}
 }

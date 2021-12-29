@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class Accept
+class SessionExist
 {
     /**
      * Handle an incoming request.
@@ -16,8 +16,8 @@ class Accept
      */
     public function handle(Request $request, Closure $next)
     {
-        if($request->route()->parameter('random') != $request->session()->get('accept')){
-            return redirect('/user/list');
+        if($request->session()->get("accept")){
+            return redirect('user/accept/'.$request->session()->get("accept"));
         }
         return $next($request);
     }
