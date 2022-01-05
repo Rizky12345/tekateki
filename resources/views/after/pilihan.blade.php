@@ -26,43 +26,57 @@
 					</div>
 				</div>
 				<h1 class="title">Soal ke 5</h1>
-				<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate, suscipit mollitia porro, cumque eum dignissimos. Illo praesentium asperiores rem tenetur, explicabo magni officia laudantium non natus, hic sint, perspiciatis eligendi vitae repudiandae quos sed voluptate mollitia exercitationem nesciunt modi. Vel qui commodi libero ipsa consequuntur, omnis tempora? Ipsam vitae, provident?</p><br>
+				@php
+				$a= 0;
+				@endphp
+				<p>@foreach ($soals as $soal)
+					@php
+					$a=$soal->id;
+					@endphp
+					{{ $soal->soal }}
+				@endforeach</p><br>
 				<div class="control">
+					@foreach($pilihans as $pilihan)
 					<label class="radio">
-						<input name="pilih" value="pinguin" id="pilih" type="radio" onclick="funcctionName()">
-						Pinguin
+						<input name="pilih" value="{{ $pilihan->pilihan }}" id="pilih" type="radio" onclick="funcctionName()" @foreach($jawabans as $jawaban)@if($pilihan->pilihan == $jawaban->jawaban) checked @endif @endforeach>
+						{{ $pilihan->pilihan }}
 					</label><br>
-					<label class="radio">
-						<input name="pilih" id="pilih" value="Gajah" type="radio" onclick="funcctionName()">
-						Gajah
-					</label><br>
-					<label class="radio">
-						<input name="pilih" id="pilih" value="kuda" type="radio" onclick="funcctionName()">
-						Kuda
-					</label><br>
+					@endforeach
+					{{-- 					@dump($jawaban) --}}
 				</div>
-				<a href="{{ session()->get("accept") }}/destroy"><button class="button is-dark">selesai</button></a>
+				
 			</div>
 		</div>
 	</div>
 </div>
+@php
+$count = 1;
+@endphp
+@foreach($soalss as $s)
+@php
+$count++
+@endphp
+@endforeach
 <div id="contentData"></div>
 <div class="container">
 	<div class="card">
 		<div class="columns">
-			<div class="column p-5 mt-3 mb-3 ml-5 card is-1 has-text-centered">1</div>
-			<div class="column p-5 mt-3 mb-3 ml-5 card is-1 has-text-centered">1</div>		
-			<div class="column p-5 mt-3 mb-3 ml-5 card is-1 has-text-centered">1</div>
-			<div class="column p-5 mt-3 mb-3 ml-5 card is-1 has-text-centered">1</div>
-			<div class="column p-5 mt-3 mb-3 ml-5 card is-1 has-text-centered">1</div>
-			<div class="column p-5 mt-3 mb-3 ml-5 card is-1 has-text-centered">1</div>
-			<div class="column p-5 mt-3 mb-3 ml-5 card is-1 has-text-centered">1</div>
-			<div class="column p-5 mt-3 mb-3 ml-5 card is-1 has-text-centered">1</div>
+			@for($i=1; $i<$count;$i++)
+			<a href="/user/accept/{{ session()->get("accept") }}?page={{ $i }}" class="column p-5 mt-3 mb-3 ml-5  card is-1 has-text-centered">
+				{{ $i }}
+			</a>
+			@endfor
+		</div>
+	</div>
+</div>
+<div class="hero">
+	<div class="hero-body">
+		<div class="is-all-centered">
+			<a href="{{ url('user/accept/'.session()->get("accept").'/destroy') }}"><button class="button is-dark">selesai</button></a>
 		</div>
 	</div>
 </div>
 @csrf
-
 <footer class="footer">
 	<div class="content has-text-centered">
 		<p>
@@ -72,27 +86,49 @@
 	</div>
 </footer>
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
 <script type="text/javascript">
 	function funcctionName () {
 		var jawaban =  $("input[type='radio'][name='pilih']:checked").val();
+		var id = {{ $a }};
+
 		$.ajaxSetup({
 			headers: {
 				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 			},
 		});
-		jQuery.ajax({
+		$.post({
 			
-			url: '{{ url("user/list/accept/simpanajax") }}',
-			type: 'POST',
+			url: '{{ url("user/accept/".session()->get('accept')."/test") }}',
 			data: {
-				'jawaban': jawaban
+				'jawaban': jawaban,
+				'id': id
+				
 			},
 			success: function(data) {
 			}
 		});
-       } 
-   </script>
+	} 
+</script>
 
-   <script src="../../../js/cd.js"></script>
+<script>
+	let a = new Date("dec 30, 2022 20:57:00").getTime();
 
-   @endsection
+	let time = setInterval(function(){
+		let now = new Date().getTime();
+		let sisa = a-now;
+
+		let jam = Math.floor((sisa % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+		let menit = Math.floor((sisa % (1000 * 60 * 60)) / (1000 * 60));
+		let detik = Math.floor((sisa % (1000 * 60)) / 1000);
+
+		document.getElementById("countdown").innerHTML = jam+":"+menit+":"+detik;
+		if (sisa < 0) {
+			clearInterval(time);
+			document.getElementById("countdown").innerHTML = "EXPIRED";
+		}
+	},1000);
+
+</script>
+
+@endsection

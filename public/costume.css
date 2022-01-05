@@ -47,3 +47,6 @@
 .absolute{
 	position: absolute;
 }
+.delete p{
+	display: none !important;
+}

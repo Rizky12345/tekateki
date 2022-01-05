@@ -6,7 +6,7 @@
 	<h1 class="title">List</h1>
 	<div class="columns is-multiline">
 		@foreach($lists as $list)
-		<a href="list/accept" class="column is-6 pl-2 mb-4">
+		<a href="{{ url('user/accept/select/'.$list->code) }}" class="column is-6 pl-2 mb-4">
 			<div class="card columns">
 				<div class="column is-2">
 					<figure class="image">
@@ -16,7 +16,7 @@
 				<div class="column">
 					<strong>{{ $list->judul }}</strong><br>
 					<div class="columns">
-						<div class="column is-6"><small>{{ $list->user->name }}</small></div>
+						<div class="column is-5"><small>{{ $list->user->name }}</small></div>
 						<div class="column"><small>{{ $list->mapel->mapel }}</small></div>
 						<div class="column"><strong>rating: 
 							@php
@@ -31,7 +31,8 @@
 							@endphp
 							@endif
 							@endforeach
-							{{ $a/$b }}
+							
+							{{ number_format((float)$a/$b, 1, '.', '') }}
 						</strong></div>
 					</div>
 				</div>

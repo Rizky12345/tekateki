@@ -3,8 +3,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title></title>
-	<link rel="stylesheet" href="../bulma/css/bulma.min.css">
-	<link rel="stylesheet" href="../costume.css">
+	<link rel="stylesheet" href="{{ url('bulma/css/bulma.min.css') }}">
+	<link rel="stylesheet" href="{{ url('costume.css') }}">
 </head>
 <body>
 	<nav class="hero is-white">

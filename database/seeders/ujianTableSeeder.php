@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ujianTableSeeder extends Seeder
 {
@@ -18,6 +19,7 @@ class ujianTableSeeder extends Seeder
             'id'=> 500,
             'judul' => "matrix",
             'kelas' => "5A",
+            'code' => Str::random(7),
             'mapel_id' => 500,
             'statuses_id' => 500,
             'user_id' => 500
@@ -26,6 +28,7 @@ class ujianTableSeeder extends Seeder
             'id'=> 400,
             'judul' => "bangun datar",
             'kelas' => "4B",
+            'code' => Str::random(7),
             'mapel_id' => 400,
             'statuses_id' => 400,
             'user_id' => 500

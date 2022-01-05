@@ -3,7 +3,7 @@
 
 @section('body_link')
 @if(isset(Auth::user()->name))
-	<a href="user/list">home</a>
+	<a href="user">home</a>
 @endif
 <div class="hero vh-100">
 	<div class="hero-body is-all-centered columns">

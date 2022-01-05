@@ -22,15 +22,10 @@ Route::get('/', function () {
             "title" => "Welcome"
         ]);
     }else{
-        return redirect("user/list");
+        return redirect("user");
     }
 });
 Route::get('/login', [authcontroller::class,'page'])->name('login');
-Route::get('/list/accept', function () {
-    return view('after.accept',[
-    	"title" => "Accept"
-    ]);
-});
 Route::get('/register', function () {
     return view('register',[
     	"title" => "register"
@@ -42,15 +37,17 @@ Route::post('register/process', [authcontroller::class, 'register']);
 
 Route::group(['prefix'=>'user', 'middleware'=>'auth'],function(){
     Route::group(['middleware'=>'sessionexist'],function(){
-        Route::get('/list', [listcontroller::class, 'index']);
-        Route::get('/list/accept', [acceptcontroller::class, 'index']);
-        Route::get('/list/accept/choice', [acceptcontroller::class, 'redirect_choice']);
+        Route::get('/', [listcontroller::class, 'index'])->name('user');
+        Route::get('/accept/select/{code}', [acceptcontroller::class, 'index']);
+        Route::get('/accept/choice/{code}', [acceptcontroller::class, 'redirect_choice']);
         Route::post('/logout/process', [authcontroller::class, 'logout']);
     });
     Route::group(['prefix'=>'accept', 'middleware'=>'accept'],function(){
+        Route::post('/{random}/test', [acceptcontroller::class, 'store']);
+        Route::get('/{random}?page={number}', [acceptcontroller::class, 'getjawaban']);
         Route::get('/{random}', [acceptcontroller::class, 'choice']);
         Route::get('/{random}/destroy', [acceptcontroller::class, 'destroy']);
-        Route::post('/list/accept/simpanajax', [acceptcontroller::class, 'store']);
+        
 
     });
 

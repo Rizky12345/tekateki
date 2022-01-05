@@ -17,7 +17,7 @@ class Accept
     public function handle(Request $request, Closure $next)
     {
         if($request->route()->parameter('random') != $request->session()->get('accept')){
-            return redirect('/user/list');
+            return redirect('/user');
         }
         return $next($request);
     }

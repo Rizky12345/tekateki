@@ -18,6 +18,7 @@ class Jawaban extends Migration
             $table->string('jawaban');
             $table->foreignId("soal_id");
             $table->foreignId("user_id");
+            $table->timestamps();
         });
     }
 

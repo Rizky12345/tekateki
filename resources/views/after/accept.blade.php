@@ -17,13 +17,13 @@
 	</div>
 	<div class="hero-body">
 		<div class="container has-text-centered">
-			<h1 class="title">Code: JDISDJ</h1>
-			<p>Pelajaran: MTK</p>
-			<p>Pembuat: Bu Asri</p>
+			<h1 class="title">Code: {{ $ujian->code }}</h1>
+			<p>Pelajaran: {{ $ujian->mapel->mapel }}</p>
+			<p>Pembuat: {{ $ujian->user->name }}</p>
 			<p>Keterangan: untuk mahasiswa informatika UMMI</p>
 			<br><br>
 			<strong>Dengan klik tombol ini anda menyetujui untuk mengerjakan ujian ini <br>	hingga selesai</strong><br><br>
-<a href="../../user/list/accept/choice">
+<a href="{{ url('user/accept/choice/'.$ujian->code) }}">
 				<button class="button is-dark">Accept</button>
 </a>
 		</div>

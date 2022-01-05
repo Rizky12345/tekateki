@@ -21,6 +21,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ratingTableSeeder::class);
         $this->call(soalsTableSeeder::class);
         $this->call(pilihansTableSeeder::class);
-        $this->call(jawabTableSeeder::class);
+        // $this->call(jawabTableSeeder::class);
     }
 }

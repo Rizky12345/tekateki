@@ -14,15 +14,6 @@ class jawabTableSeeder extends Seeder
      */
     public function run()
     {
-    	DB::table('jawabans')->insert([
-    		'jawaban' => "benda cair yang dapat berubah sesuai tempat",
-    		'soal_id' => 500,
-            'user_id' => 500
-    	]);
-    	DB::table('jawabans')->insert([
-    		'jawaban' => "berhenti",
-    		'soal_id' => 400,
-            'user_id' => 500
-    	]);
+
     }
 }

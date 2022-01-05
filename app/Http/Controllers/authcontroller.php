@@ -25,7 +25,7 @@ class authcontroller extends Controller
             $request->session()->regenerate();
             $id = Auth::id();
             $get = User::find($id);
-            return redirect()->intended('user/list');
+            return redirect()->intended('user');
         }
 
         return back()->withErrors([
@@ -50,7 +50,7 @@ class authcontroller extends Controller
                 "title" => "Login_form"
             ]);
         }else{
-            return redirect("user/list");
+            return redirect("user");
         }
     }
 }
