@@ -7,11 +7,12 @@
 @endif
 <div class="hero vh-100">
 	<div class="hero-body is-all-centered columns">
-		<div class="column is-5 has-background-black p-6 has-text-light shadow">
+		<div class="column is-5 has-background-black p-6 has-text-light shadow is-hidden-mobile">
 			<strong class="title has-text-light">login</strong>
 			<p class="">Lorem ipsum dolor sit amet consectetur adipisicing, elit. Commodi doloribus illo laudantium odit repellat nisi delectus atque ea, molestiae quas veritatis blanditiis quaerat architecto voluptatem non ipsam ullam voluptas culpa eligendi vel sunt error corrupti. Quas, magni consequuntur odit, necessitatibus minus sapiente accusamus laborum veniam corrupti officiis dignissimos ipsam exercitationem.</p>
 		</div>
 		<div class="column is-4 p-5 border-dark shadow has-text-centered">
+			<h1 class="is-hidden-desktop" style="font-size: revert;">Login</h1>
 			<form action="login/process" method="post">
 				@csrf
 				<input type="text" class="input mb-3" placeholder="Email" name="email">

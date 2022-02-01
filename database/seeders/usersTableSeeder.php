@@ -15,11 +15,19 @@ class usersTableSeeder extends Seeder
      */
     public function run()
     {
-    	DB::table('users')->insert([
+        DB::table('users')->insert([
             'id'=>500,
-    		'name' => "rizky",
-    		'email' => "kakujaa0015@gmail.com",
-    		'password' => Hash::make('another0015'),
-    	]);
+            'name' => "rizky",
+            'email' => "kakujaa0015@gmail.com",
+            'password' => Hash::make('another0015'),
+            'level' => "super admin"
+        ]);
+        DB::table('users')->insert([
+            'id'=>501,
+            'name' => "qiqi",
+            'email' => "qiqi@gmail.com",
+            'password' => Hash::make('another0015'),
+            'level' => "super admin"
+        ]);
     }
 }

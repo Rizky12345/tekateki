@@ -20,18 +20,23 @@ class ujianTableSeeder extends Seeder
             'judul' => "matrix",
             'kelas' => "5A",
             'code' => Str::random(7),
+            'repeat' => "no",
             'mapel_id' => 500,
             'statuses_id' => 500,
-            'user_id' => 500
+            'user_id' => 500,
+            'time_id' => 500
         ]);
         DB::table('ujians')->insert([
             'id'=> 400,
             'judul' => "bangun datar",
             'kelas' => "4B",
             'code' => Str::random(7),
+            'repeat' => "yes",
             'mapel_id' => 400,
             'statuses_id' => 400,
-            'user_id' => 500
+            'user_id' => 500,
+            'time_id' => 400
         ]);
+        
     }
 }

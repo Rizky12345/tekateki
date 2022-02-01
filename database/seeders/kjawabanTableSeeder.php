@@ -3,8 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
-class kjawaban extends Seeder
+class kjawabanTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -21,6 +22,16 @@ class kjawaban extends Seeder
         DB::table('kjawabans')->insert([
             'jawaban' => "berhenti",
             'soal_id' => 400,
+            'user_id' => 500
+        ]);
+        DB::table('kjawabans')->insert([
+            'jawaban' => "dih",
+            'soal_id' => 501,
+            'user_id' => 500
+        ]);
+        DB::table('kjawabans')->insert([
+            'jawaban' => "parah",
+            'soal_id' => 502,
             'user_id' => 500
         ]);
     }

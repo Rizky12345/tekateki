@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Soal extends Migration
+class Time extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class Soal extends Migration
      */
     public function up()
     {
-        Schema::create('soals', function(Blueprint $table){
+        Schema::create('times', function(Blueprint $table){
             $table->id();
-            $table->string("soal");
-            $table->string("type");
-            $table->foreignId("ujian_id");
-           $table->timestamps();
+            $table->dateTime("date_time")->nullable();
+            $table->integer("time")->nullable();
         });
     }
 
@@ -29,6 +27,6 @@ class Soal extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('soals');
+        Schema::dropIfExists('times');
     }
 }

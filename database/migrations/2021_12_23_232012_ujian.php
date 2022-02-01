@@ -18,9 +18,11 @@ class Ujian extends Migration
             $table->string('judul');
             $table->string('kelas');
             $table->string('code');
+            $table->string('repeat');
             $table->foreignId('mapel_id');
             $table->foreignId('statuses_id');
             $table->foreignId('user_id');
+            $table->foreignId('time_id');
         });
     }
 

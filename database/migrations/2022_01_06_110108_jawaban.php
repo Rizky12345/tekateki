@@ -15,9 +15,10 @@ class Jawaban extends Migration
     {
         Schema::create('jawabans', function(Blueprint $table){
             $table->id();
-            $table->string('jawaban');
+            $table->text('jawaban');
             $table->foreignId("soal_id");
             $table->foreignId("user_id");
+            $table->foreignId("nilai_id");
             $table->timestamps();
         });
     }

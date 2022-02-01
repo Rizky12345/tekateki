@@ -11,7 +11,7 @@
 		<div class="column is-4 p-5 border-dark shadow has-text-centered">
 			<form action="register/process" method="post">
 				@csrf
-				<input type="text" class="input mb-3" placeholder="Email" name="name">
+				<input type="text" class="input mb-3" placeholder="name" name="name">
 				<input type="text" class="input mb-3" placeholder="Email" name="email">
 				<input type="password" class="input mb-3" placeholder="Password" name="password">
 				<button class="button is-dark mb-3">Login</button>

@@ -17,4 +17,7 @@ class Ujian extends Model
     public function user(){
         return $this->belongsTo('App\Models\User');
     }
+    public function time(){
+        return $this->belongsTo('App\Models\Time');
+    }
 }

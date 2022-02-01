@@ -17,10 +17,12 @@ class DatabaseSeeder extends Seeder
         $this->call(usersTableSeeder::class);
         $this->call(statusTableSeeder::class);
         $this->call(mapelTableSeeder::class);
+        $this->call(timeTableSeeder::class);
         $this->call(ujianTableSeeder::class);
         $this->call(ratingTableSeeder::class);
         $this->call(soalsTableSeeder::class);
         $this->call(pilihansTableSeeder::class);
-        // $this->call(jawabTableSeeder::class);
+        $this->call(kjawabanTableSeeder::class);
+        
     }
 }
