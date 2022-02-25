@@ -82,6 +82,7 @@ class acceptcontroller extends Controller
 			$save = new Jawaban;
 			$save->jawaban = $request['jawaban'];
 			$save->soal_id = $request['id'];
+			$save->pilihan_id = $request['pilihan_id'];
 			$save->user_id = Auth::user()->id;
 			$save->nilai_id = session()->get('nilai');
 			$save->save();
@@ -92,7 +93,8 @@ class acceptcontroller extends Controller
 			->where('soal_id', $request['id'])
 			->where('nilai_id', session()->get('nilai'))
 			->update([
-				'jawaban' => $request['jawaban']
+				'jawaban' => $request['jawaban'],
+				'pilihan_id' => $request['pilihan_id']
 			]);
 			
 			return $jawaban;

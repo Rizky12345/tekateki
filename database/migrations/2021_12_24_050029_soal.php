@@ -15,10 +15,11 @@ class Soal extends Migration
     {
         Schema::create('soals', function(Blueprint $table){
             $table->id();
-            $table->string("soal");
+            $table->text("soal");
             $table->string("type");
+            $table->string("image")->nullable();
             $table->foreignId("ujian_id");
-           $table->timestamps();
+            $table->timestamps();
         });
     }
 

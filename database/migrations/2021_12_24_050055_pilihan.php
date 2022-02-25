@@ -16,7 +16,9 @@ class Pilihan extends Migration
         Schema::create('pilihans', function(Blueprint $table){
             $table->id();
             $table->string("pilihan");
+            $table->string("image")->nullable();
             $table->foreignId("soal_id");
+            $table->timestamps();
         });
     }
 

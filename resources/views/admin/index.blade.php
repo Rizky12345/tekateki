@@ -1,16 +1,11 @@
-@extends('../layout/head_link')
+@extends('../layout/head_link2')
 
 @section('body_link')
-<style>
-	#divcanvas{
-    width: 700px;
-    height: 600px;
-	}
-</style>
-<div id="divcanvas">
+<div class="container">
+    <div id="divcanvas" style="height: 300px; width: 300px;">
   <canvas id="myChart"></canvas>
 </div>
-
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

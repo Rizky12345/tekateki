@@ -1,0 +1,5 @@
+@extends('../layout/head_link2')
+
+@section('body_link')
+Lorem ipsum dolor sit amet, consectetur, adipisicing elit. Error deserunt natus ad, voluptas quia voluptatem fugit aut excepturi hic facere labore, eveniet amet adipisci, placeat. Provident similique magni nulla omnis illo autem repudiandae qui sit fuga consectetur saepe veniam tempore sapiente, consequatur nesciunt ipsum vero illum repellat! Aut odio mollitia facere. Enim sed maiores nisi eveniet provident veritatis voluptas quibusdam. Doloremque, laudantium reiciendis quo commodi, maiores saepe rerum est totam beatae quae iste eveniet eos libero architecto eum veritatis dolor consequatur reprehenderit quisquam, accusantium soluta? Iure excepturi modi aspernatur animi dolore velit. Culpa delectus officia aperiam dolor aut fuga. Voluptatum.
+@endsection

@@ -16,8 +16,11 @@ class Kjawaban extends Migration
         Schema::create('kjawabans', function(Blueprint $table){
             $table->id();
             $table->string('jawaban');
+            $table->string('image')->nullable();
             $table->foreignId("soal_id");
             $table->foreignId("user_id");
+            $table->foreignId("pilihan_id");
+            $table->timestamps();
         });
     }
 

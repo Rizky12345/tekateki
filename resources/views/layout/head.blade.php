@@ -54,10 +54,7 @@
 					</div>			
 				</div>
 			</div>
-			<form action="/user/logout/process" method="post">
-									@csrf
-									<button>logout</button>
-								</form>
+
 			<br><br>
 		</div>
 	</section>

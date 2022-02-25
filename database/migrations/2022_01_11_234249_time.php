@@ -16,7 +16,8 @@ class Time extends Migration
         Schema::create('times', function(Blueprint $table){
             $table->id();
             $table->dateTime("date_time")->nullable();
-            $table->integer("time")->nullable();
+            $table->integer("time");
+            $table->timestamps();
         });
     }
 

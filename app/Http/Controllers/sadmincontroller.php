@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 class sadmincontroller extends Controller
 {
     public function index(){
-        return view('sadmin/index');
+        return view('sadmin/index',[
+            'title'=>"sAdmin"
+        ]);
     }
 }

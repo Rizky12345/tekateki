@@ -86,7 +86,7 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 						@else
 						@foreach($pilihans as $pilihan)
 						<label class="radio">
-							<input name="pilih" value="{{ $pilihan->pilihan }}" id="pilih" type="radio" onclick="funcctionName()" @foreach($jawabans as $jawaban)@if($pilihan->pilihan == $jawaban->jawaban) checked @endif @endforeach>
+							<input name="pilih" value="{{ $pilihan->pilihan }}" id="pilih" type="radio" onclick="funcctionName({{ $pilihan->id }})" @foreach($jawabans as $jawaban)@if($pilihan->id == $jawaban->pilihan_id) checked @endif @endforeach>
 							{{ $pilihan->pilihan }}
 						</label><br>
 						@endforeach
@@ -97,6 +97,7 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 			</div>
 		</div>
 	</div>
+
 	@php
 	$count = 1;
 	@endphp
@@ -105,18 +106,22 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 	$count++
 	@endphp
 	@endforeach
+
 	<div id="contentData"></div>
+
+	<br><br>
 	<div class="container">
 		<div class="">
 			<div class="card columns is-mobile is-multiline is-12">
 				@for($i=1; $i<$count;$i++)
-				<a href="/user/accept/{{ session()->get("accept") }}?page={{ $i }}" class="column card is-1-desktop is-3-mobile has-text-centered pt-5 pb-5">
+				<a href="/user/accept/{{ session()->get("accept") }}?page={{ $i }}" class="column card is-1-desktop is-3-mobile has-text-centered pt-5 pb-5 @if(isset($_GET['page']) == $i) has-background-grey-dark has-text-white @endif">
 					{{ $i }}
 				</a>
 				@endfor
 			</div>
 		</div>
 	</div>
+
 	<div class="hero-mobile is-small-mobile">
 		<div class="hero-body">
 			<div class="is-all-centered">
@@ -143,7 +148,7 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 	<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 
 	<script type="text/javascript">
-		function funcctionName () {
+		function funcctionName (pilihan_id) {
 			var jawaban =  $("input[type='radio'][name='pilih']:checked").val();
 			var id = {{ $a }};
 			var nilai_id = {{ session()->get('nilai') }};
@@ -159,7 +164,8 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 				data: {
 					'jawaban': jawaban,
 					'id': id,
-					'nilai_id': nilai_id
+					'nilai_id': nilai_id,
+					'pilihan_id': pilihan_id
 
 				},
 				success: function(data) {

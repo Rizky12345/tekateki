@@ -20,7 +20,7 @@ class usersTableSeeder extends Seeder
             'name' => "rizky",
             'email' => "kakujaa0015@gmail.com",
             'password' => Hash::make('another0015'),
-            'level' => "super admin"
+            'level' => "admin"
         ]);
         DB::table('users')->insert([
             'id'=>501,

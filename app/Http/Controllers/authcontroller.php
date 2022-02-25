@@ -24,7 +24,7 @@ class authcontroller extends Controller
             $request->session()->regenerate();
             $id = Auth::id();
             $get = User::find($id);
-            return redirect()->intended('user');
+            return redirect()->intended('home');
         }
 
         return back()->withErrors([

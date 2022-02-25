@@ -19,11 +19,11 @@
 				<input type="text" class="input mb-3" placeholder="Password" name="password">
 				<button class="button is-dark mb-3">Login</button>
 			</form>
-			@if(isset($message))
+			@error('messege')
 			<div class="notification is-danger is-light">
 				{{ $message }}
 			</div>
-			@endif
+			@enderror
 		</div>
 	</div>
 </div>
