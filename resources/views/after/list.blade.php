@@ -59,22 +59,7 @@
 					<div class="columns">
 						<div class="column is-5"><small>{{ $list->user->name }}</small></div>
 						<div class="column"><small>{{ $list->mapel->mapel }}</small></div>
-						<div class="column"><strong>rating: 
-							@php
-							$a = 0;
-							$b = 0;
-							@endphp
-							@foreach($ratings as $rating)
-							@if($rating->ujian_id == $list->id)
-							@php
-							$a = $a+$rating->rating;
-							$b++;
-							@endphp
-							@endif
-							@endforeach
-							
-							{{ number_format((float)$a/$b, 1, '.', '') }}
-						</strong></div>
+						
 					</div>
 				</div>
 			</div>
@@ -105,24 +90,7 @@
 							<div class="column is-5-mobile">
 								{{ $list->mapel->mapel }}
 							</div>
-							<div class="column is-9-mobile">
-								<strong>rating: 
-									@php
-									$a = 0;
-									$b = 0;
-									@endphp
-									@foreach($ratings as $rating)
-									@if($rating->ujian_id == $list->id)
-									@php
-									$a = $a+$rating->rating;
-									$b++;
-									@endphp
-									@endif
-									@endforeach
-
-									{{ number_format((float)$a/$b, 1, '.', '') }}
-								</strong>
-							</div>
+							
 						</div>
 					</div>			
 				</div>

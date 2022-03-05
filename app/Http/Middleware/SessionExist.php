@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SessionExist
 {
@@ -16,9 +17,12 @@ class SessionExist
      */
     public function handle(Request $request, Closure $next)
     {
-        if($request->session()->get("accept")){
-            return redirect('user/accept/'.$request->session()->get("accept"));
+        if(Auth::user()->level == "user"){
+            if($request->session()->get("accept")){
+                return redirect('user/accept/'.$request->session()->get("accept"));
+            }
+            return $next($request);
         }
-        return $next($request);
+        
     }
 }

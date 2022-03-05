@@ -11,8 +11,8 @@ class Ujian extends Model
     public function mapel(){
         return $this->belongsTo('App\Models\Mapel');
     }
-    public function statuse(){
-        return $this->belongsTo('App\Models\Statuse');
+    public function kelase(){
+        return $this->belongsTo('App\Models\Kelase');
     }
     public function user(){
         return $this->belongsTo('App\Models\User');

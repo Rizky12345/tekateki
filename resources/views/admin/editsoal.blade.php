@@ -26,10 +26,9 @@ $count_pilihan_json = 0;
 	@endphp
 	
 	<div class="columns" id="soal{{ $a }}{{ $a }}{{ $a }}">
-		<div class="card column is-11">
+		<div class="card column is-12">
 			<div class="card-content">
-				{{ $soal->id }}
-				<button class="button is-danger" onclick="delete_type('soal', {{ $soal->id }}, 'soal{{ $a }}{{ $a }}{{ $a }}')" type="button">Delete soal</button><br>
+				<button class="button is-dark" onclick="delete_type('soal', {{ $soal->id }}, 'soal{{ $a }}{{ $a }}{{ $a }}')" type="button">Delete soal</button><br>
 				<br>
 				<label class="radio">
 					<input name="type{{ $soal->id }}" value="pilihan" id="pilih" type="radio" onclick="typesoal({{ $soal->id }}, 'pilihan',{{ $a }}, 'addchoice{{ $a }}')" @if($soal->type == 'pilihan') checked @endif>
@@ -44,8 +43,23 @@ $count_pilihan_json = 0;
 				<div style="position: fixed; z-index: 9999; left: 0px; right: 0px; width: 100%; top: 0px; display: none;" id="load">
 					<div style="margin:auto; display: table; background: #00000091; color:white; padding:10px 20px;">Pending</div>
 				</div>
+				@php
+				$name_image = "soalfile$a";
+
+				@endphp
+				
+
+				@if($errors->first($name_image) == "")
+				@else
+				<div style="position: fixed; z-index: 9999; left: 0px; bottom: 0px;" id="loadsoal{{ $a }}" onclick="hide_message('loadsoal{{ $a }}')">
+					<div style="margin:auto; display: table; background: #00000091; color:white; padding:10px 20px;">Gambar harus dibawah 2mb</div>
+				</div>
+				@endif
+				
+
 				<input type="text" class="is-hidden" name="id{{ $a }}" value="513">
-				<textarea name="soal{{ $a }}" id="soal{{ $a }}" class="textarea">{{ $soal->soal }}</textarea>
+				<textarea name="soal{{ $a }}" id="soal{{ $a }}" class="textarea" onchange="changevalue('soal', {{ $soal->id }}, '{{ $ujian->code }}', 'soal{{ $a }}')">{{ $soal->soal }}</textarea>
+
 				<br>
 				<img src="{{ asset("storage/$soal->image") }}" alt="" id="soal_image{{ $a }}">
 				<input type="text" class="is-hidden" value="{{ $soal->id }}" name="soalid{{ $a }}">
@@ -65,7 +79,9 @@ $count_pilihan_json = 0;
 						</span>
 					</label>
 				</div>
-				<button class="button is-danger is-small" onclick="delete_type('gambar_soal', {{ $soal->id }}, 'soal_image{{ $a }}', 'button_img_soal_delete_{{ $a }}')" type="button" id="button_img_soal_delete_{{ $a }}">Delete gambar</button>
+				@if($soal->image != NULL)
+				<button class="button is-dark is-small" onclick="delete_type('gambar_soal', {{ $soal->id }}, 'soal_image{{ $a }}', 'button_img_soal_delete_{{ $a }}')" type="button" id="button_img_soal_delete_{{ $a }}">Delete gambar</button>
+				@endif
 				<br><br>
 				<div id="typepilihan{{ $a }}" @if($soal->type == "essay") class="is-hidden" @endif>
 					@foreach($pilihans as $keyPilihan => $pilihan)
@@ -87,9 +103,17 @@ $count_pilihan_json = 0;
 
 						</label>
 
-
-						<input type="text" class="is-hidden" value="{{ $pilihan->id }}" name="pilihanid{{ $count_pilihan }}">
-						<input type="text" value="{{ $pilihan->pilihan }}" name="pilihan" id="pilihan{{ $count_pilihan }}{{ $count_pilihan }}" class="input is-normal" style="width: 90%;">
+@php
+$name_image_pilihan = "pilihanfile$count_pilihan";
+@endphp
+@if($errors->first($name_image_pilihan) == "")
+				@else
+				<div style="position: fixed; z-index: 9999; left: 0px; bottom: 0px;" id="load{{ $count_pilihan }}" onclick="hide_message('load{{ $count_pilihan }}')">
+					<div style="margin:auto; display: table; background: #00000091; color:white; padding:10px 20px;">Gambar harus dibawah 2mb</div>
+				</div>
+				@endif
+						<input  type="text" class="is-hidden" value="{{ $pilihan->id }}" name="pilihanid{{ $count_pilihan }}">
+						<input onchange="changevalue('pilihan','{{ $soal->id }}','{{ $ujian->code }}', 'pilihan{{ $count_pilihan }}{{ $count_pilihan }}','{{ $pilihan->id }}')" type="text" value="{{ $pilihan->pilihan }}" name="pilihan" id="pilihan{{ $count_pilihan }}{{ $count_pilihan }}" class="input is-normal" style="width: 90%;">
 						<br>
 						<img src="{{ asset("storage/$pilihan->image") }}" alt="" id="pilihan_image{{ $count_pilihan }}">
 						<div class="file is-small has-name" id="file-small">
@@ -111,27 +135,27 @@ $count_pilihan_json = 0;
 					</div>
 					<div id="button_pilihan_{{ $count_pilihan }}">
 						@if($pilihan->image != NULL)
-						<button class="button is-danger is-small" type="button" onclick="delete_type('gambar_pilihan', {{ $pilihan->id }}, 'pilihan_image{{ $count_pilihan }}','button_img_pilihan_delete_{{ $count_pilihan }}')" name="button_img_pilihan_delete_{{ $count_pilihan }}">Delete gambar</button>
+						<button class="button is-dark is-small" id="button_img_pilihan_delete_{{ $count_pilihan }}" type="button" onclick="delete_type('gambar_pilihan', {{ $pilihan->id }}, 'pilihan_image{{ $count_pilihan }}','button_img_pilihan_delete_{{ $count_pilihan }}')" name="button_img_pilihan_delete_{{ $count_pilihan }}">Delete gambar</button>
 						@endif
 
-						<button class="button is-danger is-small" type="button" onclick="delete_type('pilihan', {{ $pilihan->id }}, 'pilihan_select{{ $count_pilihan }}','button_pilihan_{{ $count_pilihan }}')">Delete pilihan</button>
+						<button class="button is-dark is-small" type="button" onclick="delete_type('pilihan', {{ $pilihan->id }}, 'pilihan_select{{ $count_pilihan }}','button_pilihan_{{ $count_pilihan }}')">Delete pilihan</button>
 						<br><br>
 					</div>
-					
+
 					@endif
 					@endforeach
 				</div>
 				<div id="addchoice{{ $a }}" @if($soal->type == "essay") class="is-hidden" @endif>
 
 				</div>
-				<button  type="button" id="btn-choice{{ $a }}" @if($soal->type == "essay") class="is-hidden" @else class="button" @endif>++pilihan</button>
+				<button  type="button" onclick="tambah_pilihan('{{ $soal->id }}', 'addchoice{{ $a }}')" id="btn-choice{{ $a }}" @if($soal->type == "essay") class="is-hidden" @else class="button" @endif>++pilihan</button>
 				<br>
 			</div>
 		</div>
 	</div><br>
 	@endforeach
 	<div id="addcard">
-		
+
 	</div>
 </div>
 <input type="text" class="is-hidden"
@@ -143,6 +167,7 @@ value="{{ $a }}" name="soalcount">
 
 
 <script>
+
 	function delay(callback, ms) {
 		var timer = 0;
 		return function() {
@@ -160,23 +185,56 @@ value="{{ $a }}" name="soalcount">
 		location.reload();
 	}
 </script>
+<script>
+	function changevalue(type, soal_id, ujian_code, value, pilihan_id){
+		$('#load').show();
+		if (type == "soal") {
+			var asd = $(`#${value}`).val();
+			
+			$.ajaxSetup({
+				headers:{
+					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+				},
+			});
+			$.post({
+				url: `edit/p`,
+				data:{
+					value: asd,
+					soal_id: soal_id,
+					ujian_code: ujian_code,
+				},
+				success: function(data) {
+					$('#load').hide();
+				}
+			});
+		}
+		if (type == "pilihan") {
+			var asd = $(`#${value}`).val();
+			$.ajaxSetup({
+				headers:{
+					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+				},
+			});
+			$.post({
+				url: `edit/pilihan`,
+				data:{
+					value: asd,
+					soal_id: soal_id,
+					ujian_code: ujian_code,
+					pilihan_id: pilihan_id,
+				},
+				success: function(data) {
+					$('#load').hide();
+				}
+			});
+		}
+	}
+
+</script>
 
 <script>
-</script>
-@php
-$p = 0;
-@endphp
-@foreach($soals as $soal)
-@php
-$b = ++$p;
-@endphp
-<script type="text/javascript">
-
-	$( "#soal{{ $b }}" ).keyup(delay(function() {
-		var id = {{ $soal->id }};
-		var value = $( this ).val();
+	function tambah_pilihan(soal_id, id){
 		$('#load').show();
-
 		$.ajaxSetup({
 			headers: {
 				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -184,55 +242,21 @@ $b = ++$p;
 		});
 		$.post({
 
-			url: '{{ url("admin/ujian/".$ujian->code."/edit/p") }}',
+			url: 'edit/tambahpilihan',
 			data: {
-				'id': id,
-				'soal': value
+				'pilihan': "masukkan pilihan",
+				'soal_id': soal_id
+
 			},
 			success: function(data) {
 				$('#load').hide();
 			}
 		});
-		console.log(value);
-	},1000))
-	.keyup();
+		$(`#${id}`).append('<div>klik reload untuk edit<br><button class="button" type="button"onclick="reload()">Reload</button></div><br>');
+
+	}
 </script>
-@endforeach
-@php
-$j=0;
-@endphp
 
-@foreach($soals as $soal)
-@php
-$l=++$j;
-@endphp
-
-<script>
-	$(document).ready(function(){
-		$("#btn-choice{{ $l }}").click(function(){
-			$('#load').show();
-			$.ajaxSetup({
-				headers: {
-					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-				},
-			});
-			$.post({
-
-				url: '{{ url("admin/ujian/$ujian->code/edit/tambahpilihan") }}',
-				data: {
-					'pilihan': "masukkan pilihan",
-					'soal_id': {{ $soal->id }}
-
-				},
-				success: function(data) {
-					$('#load').hide();
-				}
-			});
-			$("#addchoice{{ $l }}").append('<div>klik reload untuk edit<br><button class="button" type="button"onclick="reload()">Reload</button></div><br>');
-		});
-	});
-</script>
-@endforeach
 <script type="text/javascript">
 	function funcctionName (count,id,pilihan_id) {
 		$('#load').show();
@@ -290,45 +314,6 @@ $l=++$j;
 	});
 
 </script>
-@foreach($soals as $soal)
-@foreach($pilihans as $pilihan)
-@if($pilihan->soal_id == $soal->id)
-@php
-$count_json = ++$count_pilihan_json;
-$asd = 'asdsad';
-@endphp
-
-<script type="text/javascript">
-
-	$( "#pilihan{{ $count_json }}{{ $count_json }}" ).keyup(delay(function() {
-		var id = {{ $pilihan->id }};
-		var soal_id = {{ $soal->id }};
-		var value = $( this ).val();
-		$('#load').show();
-		$.ajaxSetup({
-			headers: {
-				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-			},
-		});
-		$.post({
-
-			url: '{{ url("admin/ujian/".$ujian->code."/edit/pilihan") }}',
-			data: {
-				'id': id,
-				'soal_id': soal_id,
-				'pilihan': value
-			},
-			success: function(data) {
-				$('#load').hide();
-			}
-		});
-		console.log(value);
-	},1000))
-	.keyup();
-</script>
-@endif
-@endforeach
-@endforeach
 <script src="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js"></script>
 <link href="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.css" rel="stylesheet"/>
 <script>
@@ -448,6 +433,11 @@ $asd = 'asdsad';
 			});
 		}
 
+	}
+</script>
+<script>
+	function hide_message(id){
+		$(`#${id}`).hide();
 	}
 </script>
 @endsection

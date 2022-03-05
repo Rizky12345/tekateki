@@ -18,6 +18,7 @@ class usersTableSeeder extends Seeder
         DB::table('users')->insert([
             'id'=>500,
             'name' => "rizky",
+            'kelase_id' => 510,
             'email' => "kakujaa0015@gmail.com",
             'password' => Hash::make('another0015'),
             'level' => "admin"
@@ -25,9 +26,10 @@ class usersTableSeeder extends Seeder
         DB::table('users')->insert([
             'id'=>501,
             'name' => "qiqi",
+            'kelase_id' => 510,
             'email' => "qiqi@gmail.com",
             'password' => Hash::make('another0015'),
-            'level' => "super admin"
+            'level' => "user"
         ]);
     }
 }

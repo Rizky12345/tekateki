@@ -1,4 +1,4 @@
-@extends('../layout/head_link2')
+@extends('../layout/head_link')
 @section('body_link')
 <div class="hero is-medium">
 	<div class="hero-head pt-5">

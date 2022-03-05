@@ -1,0 +1,9 @@
+.logout-hover{
+	background: none;
+	border: 0px;
+	cursor: pointer;
+	width: 100%;
+}
+.logout-hover:hover{
+	background: #f5f5f5;
+}

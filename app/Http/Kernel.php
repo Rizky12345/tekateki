@@ -58,6 +58,7 @@ class Kernel extends HttpKernel
         'accept' => \App\Http\Middleware\Accept::class,
         'level' => \App\Http\Middleware\Level::class,
         'sessionexist' => \App\Http\Middleware\SessionExist::class,
+        'sessionExistAdmin' => \App\Http\Middleware\sessionExistAdmin::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,

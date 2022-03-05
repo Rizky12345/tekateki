@@ -75,6 +75,28 @@ class acceptcontroller extends Controller
 
 		]);
 	}
+	public function testessay(Request $request, $random){
+		$jawabans = Jawaban::where('user_id','=', Auth::user()->id)->where('soal_id','=',$request->soal_id)->where('nilai_id', session()->get('nilai'))->get();
+		if($jawabans->isEmpty()){
+			$save = new Jawaban;
+			$save->jawaban = $request['jawaban'];
+			$save->soal_id = $request['soal_id'];
+			$save->pilihan_id = NULL;
+			$save->user_id = Auth::user()->id;
+			$save->nilai_id = session()->get('nilai');
+			$save->save();
+			return $save;
+		}else{
+			$jawaban = Jawaban::where('user_id', Auth::user()->id)
+			->where('soal_id', $request['soal_id'])
+			->where('nilai_id', session()->get('nilai'))
+			->update([
+				'jawaban' => $request->jawaban
+			]);
+			
+			return $jawaban;
+		}
+	}
 	public function store(Request $request, $random){
 		$jawabans = DB::table('Jawabans')->where('user_id', Auth::user()->id)->where('soal_id', $request['id'])->where('nilai_id', session()->get('nilai'))->get();
 
@@ -108,18 +130,19 @@ class acceptcontroller extends Controller
 		$benar = 0;
 		foreach ($selects as $select) {
 			$soal++;
-			$kunci = Kjawaban::where('soal_id', '=', $select->id)->firstOrFail();
-			$jawaban = Jawaban::where('nilai_id', '=', session()->get("nilai"))
-			->where('soal_id', '=', $select->id)->first();
-			//
-			if ($jawaban == null) {
-				$benar = $benar+0;
-			}else{
-				if($kunci->jawaban == $jawaban->jawaban){
-					$benar++;
+			$kunci = Kjawaban::where('soal_id', '=', $select->id)->first();
+			if($kunci != NULL){
+				$jawaban = Jawaban::where('nilai_id', '=', session()->get("nilai"))->where('soal_id', '=', $select->id)->first();
+				if ($jawaban == null) {
+					$benar = $benar+0;
+				}else{
+					if($kunci->pilihan_id == $jawaban->pilihan_id){
+						$benar++;
+					}
 				}
 			}
 		}
+		
 		if ($benar == 0) {
 			$nilai = 0;
 		}else{

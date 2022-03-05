@@ -18,6 +18,7 @@ class Nilai extends Migration
             $table->foreignId('user_id');
             $table->foreignId('ujian_id');
             $table->float('nilai')->nullable();
+            $table->string('type')->nullable();
             $table->timestamps();
         });
     }

@@ -17,6 +17,7 @@
 			</div>
 		</div>
 		<div class="hero-body has-text-centered">
+			<a href="register"><strong class="pl-4 pr-4">register</strong></a>
 			<strong class="title is-1">HAHA</strong><br>
 			<small class="subtitle is-3">hai</small>
 		</div>

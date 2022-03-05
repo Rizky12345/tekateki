@@ -78,6 +78,8 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 						$a=$soal->id;
 						@endphp
 						{{ $soal->soal }}
+						<br>
+						<img src="{{ asset("storage/$soal->image") }}" alt=""><br>
 					@endforeach</p><br>
 					<div class="control">
 						@if($pilihans->isEmpty())
@@ -88,7 +90,9 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 						<label class="radio">
 							<input name="pilih" value="{{ $pilihan->pilihan }}" id="pilih" type="radio" onclick="funcctionName({{ $pilihan->id }})" @foreach($jawabans as $jawaban)@if($pilihan->id == $jawaban->pilihan_id) checked @endif @endforeach>
 							{{ $pilihan->pilihan }}
-						</label><br>
+
+						</label>
+						<img src="{{ asset("storage/$pilihan->image") }}" alt=""><br>
 						@endforeach
 						@endif
 					</div>
@@ -114,7 +118,7 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 		<div class="">
 			<div class="card columns is-mobile is-multiline is-12">
 				@for($i=1; $i<$count;$i++)
-				<a href="/user/accept/{{ session()->get("accept") }}?page={{ $i }}" class="column card is-1-desktop is-3-mobile has-text-centered pt-5 pb-5 @if(isset($_GET['page']) == $i) has-background-grey-dark has-text-white @endif">
+				<a href="/user/accept/{{ session()->get("accept") }}?page={{ $i }}" class="column card is-1-desktop is-3-mobile has-text-centered pt-5 pb-5">
 					{{ $i }}
 				</a>
 				@endfor
@@ -196,17 +200,16 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 			});
 			$.post({
 
-				url: '{{ url("user/accept/".session()->get('accept')."/test") }}',
+				url: '{{ url("user/accept/".session()->get('accept')."/testessay") }}',
 				data: {
 					'jawaban': value,
-					'id': id,
+					'soal_id': id,
 					'nilai_id': nilai_id
 
 				},
 				success: function(data) {
 				}
 			});
-			console.log(value);
 		},500))
 		.keyup();
 	</script>

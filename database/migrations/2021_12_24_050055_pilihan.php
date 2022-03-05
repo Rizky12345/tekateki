@@ -17,7 +17,7 @@ class Pilihan extends Migration
             $table->id();
             $table->string("pilihan");
             $table->string("image")->nullable();
-            $table->foreignId("soal_id");
+            $table->foreignId("soal_id") ->nullable();
             $table->timestamps();
         });
     }
