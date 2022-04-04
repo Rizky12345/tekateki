@@ -10,4 +10,7 @@ class Nilai extends Model
     public function user(){
         return $this->belongsTo('App\Models\User');
     }
+        public function ujian(){
+        return $this->belongsTo('App\Models\Ujian');
+    }
 }

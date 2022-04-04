@@ -9,6 +9,7 @@ use App\Models\Pilihan;
 use App\Models\Kjawaban;
 use App\Models\Time;
 use App\Models\Mapel;
+use App\Models\Nilai;
 use App\Models\Kelase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
@@ -419,7 +420,6 @@ class ujiancontroller extends Controller
     public function createprocess(Request $request){
         $validate = $request->validate([
             'judul'=>'required',
-            'kelas'=>'required',
             'repeat'=>'required',
             'status'=>'required',
             'mapel'=>'required',
@@ -451,9 +451,11 @@ class ujiancontroller extends Controller
         $ujian = new Ujian;
         $ujian->judul = $request->judul;
         $ujian->keterangan = $request->keterangan;
-        $ujian->kelase_id = $request->kelas;
+        $ujian->kelase_id = Auth::user()->kelase_id;
         $ujian->user_id = Auth::user()->id;
         $ujian->repeat = $request->repeat;
+        $ujian->kkm = $request->kkm;
+        $ujian->umum = $request->umum;
         $ujian->code = $code;
         $ujian->time_id = $time->id;
         $ujian->mapel_id = $request->mapel;
@@ -492,18 +494,66 @@ class ujiancontroller extends Controller
         }
         return $ujian;
     }
-    public function kelas(Request $request, $code){
-        $ujian = Ujian::where('code','=',$code)->update([
-            'kelase_id'=>$request->kelase_id
-        ]);
-
-        return $ujian;
-    }
-        public function judul(Request $request, $code){
+    public function judul(Request $request, $code){
         $ujian = Ujian::where('code','=',$code)->update([
             'judul'=>$request->judul
         ]);
 
         return $ujian;
+    }
+    public function status(Request $request, $code){
+        $ujian = Ujian::where('code','=',$code)->update([
+            'status'=>$request->value
+        ]);
+
+        return $ujian;
+    }
+    public function kelas(Request $request, $code){
+        $kelas = Kelase::where('kelas','=',$request->value)->first();
+        $ujian = Ujian::where('code','=',$code)->update([
+            'kelase_id' => $kelas->id
+        ]);
+        return $ujian;
+    }
+    public function kkm(Request $request, $code){
+        $ujian = Ujian::where('code','=',$code)->update([
+            'kkm' => $request->value
+        ]);
+        return $ujian;
+    }
+    public function umum($code){
+        $ujian = Ujian::where('code','=',$code)->first();
+        if($ujian->umum == 'no'){
+            $ujian = Ujian::where('code','=',$code)->update([
+                'umum'=>"yes"
+            ]);
+        }
+        elseif($ujian->umum == 'yes'){
+            $ujian = Ujian::where('code','=',$code)->update([
+                'umum'=>"no"
+            ]);
+        }
+        return $ujian;
+    }
+    public function destroy(Request $request){
+        $ujian = Ujian::where('id','=',$request->id)->first();
+        $soals = Soal::where('ujian_id','=',$ujian->id)->get();
+        $collect = collect([]);
+        foreach($soals as $soal){
+            $collect->push($soal->id);
+        }
+        $kjawaban = Kjawaban::whereIn('soal_id',$collect)->delete();
+        $nilai = Nilai::where('ujian_id','=',$ujian->id)->delete();
+        $pilihan = Pilihan::whereIn('soal_id',$collect)->delete();
+        $soals = Soal::where('ujian_id','=',$ujian->id)->delete();
+        $ujian = Ujian::where('id','=',$request->id)->delete();
+        return back()->with('success', 'ujian dihapus');
+    }
+    public function serahkan($code){
+        dd($code);
+        $ujian = Ujian::where('code','=',$code)->update([
+            'serahkan'=>'yes'
+        ]);
+        return back()->with('success', 'Nilai ujian diserahkan');
     }
 }

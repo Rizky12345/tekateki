@@ -8,7 +8,13 @@ $count_pilihan = 0;
 $count_pilihan_json = 0;
 @endphp
 
-<form action="{{ url('admin/ujian/'.$ujian->code.'/edit/image') }}" method="post" enctype="multipart/form-data">
+
+@can('admin')
+@endcan
+@can('admin')
+@endcan
+
+<form @can('admin') action="{{ url('admin/ujian/'.$ujian->code.'/edit/image') }}" @endcan @can('sadmin') action="{{ url('s/admin/ujian/'.$ujian->code.'/edit/image') }}" @endcan method="post" enctype="multipart/form-data">
 	@csrf
 	<div class="container mt-5">
 		<div style="display: flex;" class="is-12 is-justify-content-right">
@@ -27,6 +33,11 @@ $count_pilihan_json = 0;
 	
 	<div class="columns" id="soal{{ $a }}{{ $a }}{{ $a }}">
 		<div class="card column is-12">
+			<div class="card-head">
+				<div class="card-header-title">
+					Soal ke {{ $a }}
+				</div>
+			</div>
 			<div class="card-content">
 				<button class="button is-dark" onclick="delete_type('soal', {{ $soal->id }}, 'soal{{ $a }}{{ $a }}{{ $a }}')" type="button">Delete soal</button><br>
 				<br>
@@ -90,7 +101,6 @@ $count_pilihan_json = 0;
 					$count_pilihan = ++$count_pilihan;
 					@endphp
 					<div id="pilihan_select{{ $count_pilihan }}">
-						{{ $pilihan->id }}
 						<label class="radio">
 							<input class="mt-3" name="pilih{{ $a }}" value="{{ $pilihan->pilihan }}" id="pilih" type="radio" onclick="funcctionName({{ $a }}, {{ $soal->id }}, {{ $pilihan->id }})" 
 							@foreach($kuncis as $kunci)
@@ -103,15 +113,15 @@ $count_pilihan_json = 0;
 
 						</label>
 
-@php
-$name_image_pilihan = "pilihanfile$count_pilihan";
-@endphp
-@if($errors->first($name_image_pilihan) == "")
-				@else
-				<div style="position: fixed; z-index: 9999; left: 0px; bottom: 0px;" id="load{{ $count_pilihan }}" onclick="hide_message('load{{ $count_pilihan }}')">
-					<div style="margin:auto; display: table; background: #00000091; color:white; padding:10px 20px;">Gambar harus dibawah 2mb</div>
-				</div>
-				@endif
+						@php
+						$name_image_pilihan = "pilihanfile$count_pilihan";
+						@endphp
+						@if($errors->first($name_image_pilihan) == "")
+						@else
+						<div style="position: fixed; z-index: 9999; left: 0px; bottom: 0px;" id="load{{ $count_pilihan }}" onclick="hide_message('load{{ $count_pilihan }}')">
+							<div style="margin:auto; display: table; background: #00000091; color:white; padding:10px 20px;">Gambar harus dibawah 2mb</div>
+						</div>
+						@endif
 						<input  type="text" class="is-hidden" value="{{ $pilihan->id }}" name="pilihanid{{ $count_pilihan }}">
 						<input onchange="changevalue('pilihan','{{ $soal->id }}','{{ $ujian->code }}', 'pilihan{{ $count_pilihan }}{{ $count_pilihan }}','{{ $pilihan->id }}')" type="text" value="{{ $pilihan->pilihan }}" name="pilihan" id="pilihan{{ $count_pilihan }}{{ $count_pilihan }}" class="input is-normal" style="width: 90%;">
 						<br>
@@ -146,9 +156,8 @@ $name_image_pilihan = "pilihanfile$count_pilihan";
 					@endforeach
 				</div>
 				<div id="addchoice{{ $a }}" @if($soal->type == "essay") class="is-hidden" @endif>
-
 				</div>
-				<button  type="button" onclick="tambah_pilihan('{{ $soal->id }}', 'addchoice{{ $a }}')" id="btn-choice{{ $a }}" @if($soal->type == "essay") class="is-hidden" @else class="button" @endif>++pilihan</button>
+				<button  type="button" onclick="tambah_pilihan('{{ $soal->id }}', 'addchoice{{ $a }}')" id="btn-choice{{ $a }}" @if($soal->type == "essay") class="button is-hidden" @else class="button" @endif>++pilihan</button>
 				<br>
 			</div>
 		</div>
@@ -164,8 +173,7 @@ value="{{ $a }}" name="soalcount">
 </form>
 <button style="margin-bottom: 100px;" class="button" id="btn-soal">++Soal</button>
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-
-
+@can('admin')
 <script>
 
 	function delay(callback, ms) {
@@ -316,6 +324,7 @@ value="{{ $a }}" name="soalcount">
 </script>
 <script src="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js"></script>
 <link href="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.css" rel="stylesheet"/>
+
 <script>
 	function changeFile(fileInput, filePlaceholder){
 		if (fileInput.files.length > 0) {
@@ -329,13 +338,13 @@ value="{{ $a }}" name="soalcount">
 	function typesoal(soal_id, type,a, addchoice){
 		$('#load').show();
 		if (type == 'essay') {
-			$(`#typepilihan${a}`).hide();
-			$(`#btn-choice${a}`).hide();
-			$(`#${addchoice}`).hide();
+			$(`#typepilihan${a}`).addClass('is-hidden');
+			$(`#btn-choice${a}`).addClass('is-hidden');
+			$(`#${addchoice}`).addClass('is-hidden');
 		}else{
-			$(`#typepilihan${a}`).show();
-			$(`#btn-choice${a}`).show();
-			$(`#${addchoice}`).show();
+			$(`#typepilihan${a}`).removeClass('is-hidden');
+			$(`#btn-choice${a}`).removeClass('is-hidden');
+			$(`#${addchoice}`).removeClass('is-hidden');
 		}
 		$.ajaxSetup({
 			headers: {
@@ -440,5 +449,283 @@ value="{{ $a }}" name="soalcount">
 		$(`#${id}`).hide();
 	}
 </script>
+@endcan
+@can('sadmin')
+<script>
+
+	function delay(callback, ms) {
+		var timer = 0;
+		return function() {
+			var context = this, args = arguments;
+			clearTimeout(timer);
+			timer = setTimeout(function () {
+				callback.apply(context, args);
+			}, ms || 0);
+		};
+	}
+</script>
+
+<script>
+	function reload(){
+		location.reload();
+	}
+</script>
+<script>
+	function changevalue(type, soal_id, ujian_code, value, pilihan_id){
+		$('#load').show();
+		if (type == "soal") {
+			var asd = $(`#${value}`).val();
+			
+			$.ajaxSetup({
+				headers:{
+					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+				},
+			});
+			$.post({
+				url: `edit/p`,
+				data:{
+					value: asd,
+					soal_id: soal_id,
+					ujian_code: ujian_code,
+				},
+				success: function(data) {
+					$('#load').hide();
+				}
+			});
+		}
+		if (type == "pilihan") {
+			var asd = $(`#${value}`).val();
+			$.ajaxSetup({
+				headers:{
+					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+				},
+			});
+			$.post({
+				url: `edit/pilihan`,
+				data:{
+					value: asd,
+					soal_id: soal_id,
+					ujian_code: ujian_code,
+					pilihan_id: pilihan_id,
+				},
+				success: function(data) {
+					$('#load').hide();
+				}
+			});
+		}
+	}
+
+</script>
+
+<script>
+	function tambah_pilihan(soal_id, id){
+		$('#load').show();
+		$.ajaxSetup({
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			},
+		});
+		$.post({
+
+			url: 'edit/tambahpilihan',
+			data: {
+				'pilihan': "masukkan pilihan",
+				'soal_id': soal_id
+
+			},
+			success: function(data) {
+				$('#load').hide();
+			}
+		});
+		$(`#${id}`).append('<div>klik reload untuk edit<br><button class="button" type="button"onclick="reload()">Reload</button></div><br>');
+
+	}
+</script>
+
+<script type="text/javascript">
+	function funcctionName (count,id,pilihan_id) {
+		$('#load').show();
+		var jawaban =  $("input[type='radio'][name='"+`pilih${count}`+"']:checked").val();
+
+		$.ajaxSetup({
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			},
+		});
+		$.post({
+			url: '{{ url("s/admin/ujian/$ujian->code/edit/kuncijawaban") }}',
+			data: {
+				'jawaban': jawaban,
+				'soal_id': id,
+				'pilihan_id': pilihan_id
+
+			},
+			success: function(data) {
+				$('#load').hide();
+			}
+		});
+
+	} 
+</script>
+<script>
+	$(document).ready(function(){
+		var a = {{ $a }};
+		var b = 0;
+		$("#btn-soal").click(function(){
+			a = a+1;
+			b = b+1;
+			$('#load').show();
+			$.ajaxSetup({
+				headers: {
+					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+				},
+			});
+			$.post({
+
+				url: '{{ url("s/admin/ujian/$ujian->code/edit/tambahsoal") }}',
+				data: {
+					'soal': "masukkan soal",
+					'type': "pilihan",
+					'ujian_id': {{ $ujian->id }}
+
+				},
+				success: function(data) {
+					$('#load').hide();
+				}
+			});
+
+			$("#addcard").append('<div class="columns"><div class="column card is-11"><div class="card-content"><p>Data berhasil di tambahkan, tekan reload untuk mengedit nomer</p><br><button class="button" type="button" onclick="reload()">Reload</button></div></div></div><br>');
+		});
+	});
+
+</script>
+<script src="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js"></script>
+<link href="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.css" rel="stylesheet"/>
+
+<script>
+	function changeFile(fileInput, filePlaceholder){
+		if (fileInput.files.length > 0) {
+			const fileName = document.querySelector(`#file-small ${filePlaceholder}`);
+			fileName.textContent = fileInput.files[0].name;
+		}
+	}
+</script>
+
+<script>
+	function typesoal(soal_id, type,a, addchoice){
+		$('#load').show();
+		if (type == 'essay') {
+			$(`#typepilihan${a}`).addClass('is-hidden');
+			$(`#btn-choice${a}`).addClass('is-hidden');
+			$(`#${addchoice}`).addClass('is-hidden');
+		}else{
+			$(`#typepilihan${a}`).removeClass('is-hidden');
+			$(`#btn-choice${a}`).removeClass('is-hidden');
+			$(`#${addchoice}`).removeClass('is-hidden');
+		}
+		$.ajaxSetup({
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			},
+		});
+		$.post({
+			url: '{{ url("s/admin/ujian/".$ujian->code."/edit/type") }}',
+			data:{
+				'soal_id': soal_id,
+				'type': type
+			},
+			success: function(data){
+				$('#load').hide();
+			}
+		});
+
+	}
+</script>
+
+
+<script>
+	function delete_type(type,type_id,tag_id, button){
+		if(type == "soal"){
+			$(`#${tag_id}`).html('');
+			$.ajaxSetup({
+				headers: {
+					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+				},
+			});
+			$.post({
+				url: '{{ url("s/admin/ujian/".$ujian->code."/edit/typedeletesoal") }}',
+				data: {
+					'soal_id': type_id
+				},
+				success: function(data){
+
+				}
+			});
+		}
+		if(type == "pilihan"){
+			$(`#${tag_id}`).html('');
+			$(`#${button}`).remove();
+			$.ajaxSetup({
+				headers: {
+					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+				},
+			});
+			$.post({
+				url: '{{ url("s/admin/ujian/".$ujian->code."/edit/typedeletepilihan") }}',
+				data: {
+					'pilihan_id': type_id
+				},
+				success: function(data){
+
+				}
+			});
+		}
+		if(type == "gambar_pilihan"){
+			$(`#${tag_id}`).attr('src', '');
+			$(`#${button}`).remove();
+			$.ajaxSetup({
+				headers: {
+					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+				},
+			});
+			$.post({
+				url: '{{ url("s/admin/ujian/".$ujian->code."/edit/destroyimage") }}',
+				data: {
+					'id': type_id,
+					'ket': type
+				},
+				success: function(data){
+
+				}
+			});
+		}
+		if(type == "gambar_soal"){
+			$(`#${tag_id}`).attr('src', '');
+			$(`#${button}`).remove();
+			$.ajaxSetup({
+				headers: {
+					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+				},
+			});
+			$.post({
+				url: '{{ url("s/admin/ujian/".$ujian->code."/edit/destroyimage") }}',
+				data: {
+					'id': type_id,
+					'ket': type
+				},
+				success: function(data){
+
+				}
+			});
+		}
+
+	}
+</script>
+<script>
+	function hide_message(id){
+		$(`#${id}`).hide();
+	}
+</script>
+@endcan
 @endsection
 

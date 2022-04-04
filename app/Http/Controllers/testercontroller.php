@@ -24,7 +24,7 @@ class testercontroller extends Controller
         $nilai = Nilai::where('ujian_id', '=', $ujian->id)->where("user_id","=", Auth::user()->id)->get();
         $time = Carbon::now('Asia/Jakarta');
         return view('admin/tester',[
-            "title" => "Accept",
+            "title" => ['admin','ujian','detail','Tester'],
             "ujian" => $find_ujian,
             "time" => $time->toDateTimeString(),
             "nilai" => $nilai
@@ -80,11 +80,12 @@ class testercontroller extends Controller
     }
     public function store(Request $request, $random){
         $jawabans = DB::table('Jawabans')->where('user_id', Auth::user()->id)->where('soal_id', $request['id'])->where('nilai_id', session()->get('nilai'))->get();
-
+$ujian = Ujian::where('code','=',session()->get('code'))->first();
         if($jawabans->isEmpty()){
             $save = new Jawaban;
             $save->jawaban = $request['jawaban'];
             $save->soal_id = $request['id'];
+            $save->ujian_id = $ujian->id;
             $save->pilihan_id = $request['pilihan_id'];
             $save->user_id = Auth::user()->id;
             $save->nilai_id = session()->get('nilai');
@@ -105,9 +106,11 @@ class testercontroller extends Controller
     }
     public function testessay(Request $request, $random){
         $jawabans = Jawaban::where('user_id','=', Auth::user()->id)->where('soal_id','=',$request->soal_id)->where('nilai_id', session()->get('nilai'))->get();
+        $ujian = Ujian::where('code','=',session()->get('code'))->first();
         if($jawabans->isEmpty()){
             $save = new Jawaban;
             $save->jawaban = $request['jawaban'];
+            $save->ujian_id = $ujian->id;
             $save->soal_id = $request['soal_id'];
             $save->pilihan_id = NULL;
             $save->user_id = Auth::user()->id;
@@ -141,6 +144,8 @@ class testercontroller extends Controller
             }else{
                 if($kunci->pilihan_id == $jawaban->pilihan_id){
                     $benar++;
+                }else{
+                    $benar = $benar+0;
                 }
             }
         }

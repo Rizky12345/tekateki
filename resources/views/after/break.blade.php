@@ -1,19 +1,6 @@
-@extends('../layout/head_link')
+@extends('../layout/head')
 @section('body_link')
 <div class="hero is-medium">
-	<div class="hero-head pt-5">
-		<div class="navbar">
-			<div class="container">
-				<div class="navbar-brand">
-					<a href="/">Hujan</a>
-				</div>
-				<div class="navbar-end">
-					<div class="navbar-item" id="now"></div>
-					<div class="navbar-item">gyjg</div>
-				</div>
-			</div>
-		</div>
-	</div>
 	<div class="hero-body">
 		<div class="container has-text-centered">
 			<h1 class="title">Anda sudah mengerjakan Ujian ini</h1>
@@ -21,9 +8,21 @@
 
 			<br><br>
 			<p>Klik tombol ini untuk ke halaman utama</p><br>
+			@can('user')
 			<a href="{{ url('user') }}" >
 				<button class="button is-dark">Home</button>
 			</a>
+			@endcan
+			@can('admin')
+			<a href="{{ url('admin') }}" >
+				<button class="button is-dark">Home</button>
+			</a>
+			@endcan
+			@can('sadmin')
+			<a href="{{ url('s/admin') }}" >
+				<button class="button is-dark">Home</button>
+			</a>
+			@endcan
 		</div>
 	</div>
 </div>

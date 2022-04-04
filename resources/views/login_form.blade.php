@@ -15,15 +15,16 @@
 			<h1 class="is-hidden-desktop" style="font-size: revert;">Login</h1>
 			<form action="login/process" method="post">
 				@csrf
-				<input type="text" class="input mb-3" placeholder="Email" name="email">
-				<input type="text" class="input mb-3" placeholder="Password" name="password">
+				<input type="text" class="input mb-3" placeholder="User_id" name="user_id">
+				<input type="password" class="input mb-3" placeholder="Password" name="password">
 				<button class="button is-dark mb-3">Login</button>
 			</form>
-			@error('messege')
-			<div class="notification is-danger is-light">
-				{{ $message }}
+			@if($errors->first('password') || $errors->first('user_id'))
+				<div class="notification is-danger is-light">
+				user_id atau password salah
 			</div>
-			@enderror
+			@endif
+
 		</div>
 	</div>
 </div>

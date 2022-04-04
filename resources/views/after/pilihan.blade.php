@@ -3,7 +3,7 @@
 
 @section('body_link')
 <section class="section" style="padding: 1.5rem 1.5rem; padding-bottom: 0px;">
-	<div class="container is-mobile is-hidden-desktop">
+	<div class="container">
 		<div class="is-mobile">
 			<div class="columns is-mobile is-multiline">
 				<div class="column is-12-mobile">
@@ -47,19 +47,6 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 	@endphp
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<div class="hero-mobile">
-		<div class="hero-head">
-			<div class="navbar pt-5">
-				<div class="container">
-					<div class="navbar-brand">
-						<h3 class="title">Hujan</h3>
-					</div>
-					<div class="navbar-end">
-						<p class="navbar-item" id="now"></p>
-						<p class="navbar-item">asdd</p>
-					</div>
-				</div>
-			</div>
-		</div>
 		<div class="hero-body">
 			<div class="container">
 				<div class="card p-5">
@@ -82,7 +69,7 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 						<img src="{{ asset("storage/$soal->image") }}" alt=""><br>
 					@endforeach</p><br>
 					<div class="control">
-						@if($pilihans->isEmpty())
+						@if($soal->type == 'essay')
 
 						<textarea name="pilih" id="textareaa" class="textarea">@foreach($jawabans as $jawab){{ $jawab->jawaban }}@endforeach</textarea>
 						@else
@@ -97,6 +84,7 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 						@endif
 					</div>
 
+			{{ $soals->links('../plihan_p') }}
 				</div>
 			</div>
 		</div>
@@ -127,10 +115,23 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 	</div>
 
 	<div class="hero-mobile is-small-mobile">
+		<div id="modal-js-example" class="modal">
+			<div class="modal-background"></div>
+			<div class="modal-content">
+				<div class="box is-3 has-text-centered">
+					<p class="title">Sudah selesai?</p>
+					
+					<a href="{{ url('user/accept/'.session()->get("accept").'/destroy') }}">
+						<button class="button is-danger">Selesai</button>
+					</a>
+					
+				</div>
+			</div>
+		</div>
 		<div class="hero-body">
 			<div class="is-all-centered">
-			
-					<button class="button is-dark" onclick="finish()">selesai</button>
+
+				<button class="button is-small is-dark js-modal-trigger" data-target="modal-js-example">Selesai</button>
 				
 			</div>
 		</div>
@@ -140,9 +141,8 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 		<br><br>	<a href="{{ url('user/accept/'.session()->get("accept").'/destroy') }}"><button class="button is-danger">Sudah</button></a>
 		<button class="button is-warning" onclick="add()">Tidak jadi</button>
 	</div>
-	@csrf
-	<footer class="footer">
-		<div class="content has-text-centered">
+	<footer class="footer has-text-centered" style="background: white;">
+		<div class="content ">
 			<p>
 				<strong>kerja praktik</strong> From <a href="https://jgthms.com">SD NEGERI CBM Cipanengah</a>. The source code is licensed. App Status
 				<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">DEMO</a>.
@@ -240,4 +240,51 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 			$("#alert").addClass("is-hidden");
 		}
 	</script>
-	@endsection
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+  // Functions to open and close a modal
+  function openModal($el) {
+  	$el.classList.add('is-active');
+  }
+
+  function closeModal($el) {
+  	$el.classList.remove('is-active');
+  }
+
+  function closeAllModals() {
+  	(document.querySelectorAll('.modal') || []).forEach(($modal) => {
+  		closeModal($modal);
+  	});
+  }
+
+  // Add a click event on buttons to open a specific modal
+  (document.querySelectorAll('.js-modal-trigger') || []).forEach(($trigger) => {
+  	const modal = $trigger.dataset.target;
+  	const $target = document.getElementById(modal);
+  	console.log($target);
+
+  	$trigger.addEventListener('click', () => {
+  		openModal($target);
+  	});
+  });
+
+  // Add a click event on various child elements to close the parent modal
+  (document.querySelectorAll('.modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button') || []).forEach(($close) => {
+  	const $target = $close.closest('.modal');
+
+  	$close.addEventListener('click', () => {
+  		closeModal($target);
+  	});
+  });
+
+  // Add a keyboard event to close all modals
+  document.addEventListener('keydown', (event) => {
+  	const e = event || window.event;
+
+    if (e.keyCode === 27) { // Escape key
+    	closeAllModals();
+    }
+});
+});
+</script>
+@endsection

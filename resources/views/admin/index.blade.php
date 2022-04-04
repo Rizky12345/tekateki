@@ -1,6 +1,12 @@
 @extends('../layout/head_link2')
 
 @section('body_link')
+@php
+$nomer_nilai = 0;
+foreach($ujians as $ujian){
+    ++$nomer_nilai;
+}
+@endphp
 <div class="container">
     <div class="tile is-ancestor">
       <div class="tile is-parent">
@@ -12,15 +18,28 @@
                   Siswa
               </h3>
               <h1 class="title">
+                @can('sadmin')
                 @php
                 $count = 0;
                 @endphp
-                @foreach($users as $user)
+                @foreach($user_all as $user)
                 @php
                 $count++;
                 @endphp
                 @endforeach
                 {{ $count }}
+                @endcan
+                @can('admin')
+                @php
+                $count2 = 0;
+                @endphp
+                @foreach($users as $user)
+                @php
+                $count2++;
+                @endphp
+                @endforeach
+                {{ $count2 }}
+                @endcan
             </h1>
         </div>
     </div>
@@ -81,18 +100,48 @@ $a = 0;
         <strong class="card-header-title">Ujian monitoring</strong>
     </div>
     <div class="card-content">
-        <div class="columns is-multiline is-10">
+        <div class="columns is-multiline is-10 is-flex is-vcentered">
             @foreach($ujians as $ujian)
             @php
             $a = $a+1;
             @endphp
-
+            @if($ujian->repeat == "no")
             <div class="column is-4 has-text-centered">
-                <h2 class="subtitle" style="margin-bottom:0px;">{{ $ujian->judul }}</h2>
+                @can('admin')
+                <a href="{{ url('admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="subtitle" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
+                @endcan
+                @can('sadmin')
+                <a href="{{ url('s/admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="subtitle" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
+                @endcan
+
+
                 <div id="divcanvas{{ $a }}" >
                     <canvas id="myChart{{ $a }}"></canvas>
                 </div>
             </div>
+            @else
+            <br>
+            @php
+            $count = 0;
+            foreach($nilais as $nilai){
+                if ($nilai->ujian_id == $ujian->id) {
+                    ++$count;
+                } 
+            }
+            @endphp
+            <div class="column has-text-centered">
+                 @can('admin')
+                <a href="{{ url('admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="title" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
+                @endcan
+                @can('sadmin')
+                 <a href="{{ url('s/admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="title" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
+                @endcan
+                <h1>Jumlah yang mengerjakan</h1>
+                <h1 class="title is-1">{{ $count }}</h1>
+            </div>
+
+            @endif
+
             @endforeach
 
         </div>
@@ -212,6 +261,7 @@ $belum = 0;
 @php
 $b = $b+1;
 $belum = $peserta - $sudah;
+$belum <= 0 ? $belum = 0 : $belum;
 @endphp
 
 

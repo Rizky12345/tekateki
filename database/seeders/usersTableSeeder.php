@@ -19,7 +19,7 @@ class usersTableSeeder extends Seeder
             'id'=>500,
             'name' => "rizky",
             'kelase_id' => 510,
-            'email' => "kakujaa0015@gmail.com",
+            'user_id' => 1930511035,
             'password' => Hash::make('another0015'),
             'level' => "admin"
         ]);
@@ -27,7 +27,7 @@ class usersTableSeeder extends Seeder
             'id'=>501,
             'name' => "qiqi",
             'kelase_id' => 510,
-            'email' => "qiqi@gmail.com",
+            'user_id' => 1930511036,
             'password' => Hash::make('another0015'),
             'level' => "user"
         ]);

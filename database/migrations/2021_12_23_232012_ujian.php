@@ -20,6 +20,8 @@ class Ujian extends Migration
             $table->string('repeat');
             $table->string('status');
             $table->integer('kkm');
+            $table->string('serahkan')->nullable();
+            $table->string('umum');
             $table->text('keterangan')->nullable();
             $table->foreignId('mapel_id');
             $table->foreignId('kelase_id');

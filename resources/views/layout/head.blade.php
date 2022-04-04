@@ -2,74 +2,68 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title></title>
+	<title>{{ $title }}</title>
 	<link rel="stylesheet" href="{{ url('bulma/css/bulma.min.css') }}">
 	<link rel="stylesheet" href="{{ url('costume.css') }}">
 </head>
-<body>
-	<nav class="hero is-hidden-mobile">
-		<div class="hero-head">
-			<div class="navbar">
-				<div class="container pt-2">
-					<div class="navbar-brand">
-						<div class="nav-item">
-							<div class="title">asd</div>
-						</div>	
-					</div>
-					<div class="navbar-menu">
-						<div class="navbar-end">
-							<div class="navbar-item" id="time">{{ date('h:i') }}</div>
-							<div class="navbar-item">{{ Auth::user()->name }}</div>
-							<div class="navbar-item">
-								<form action="/user/logout/process" method="post">
-									@csrf
-									<button>logout</button>
-								</form>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		@yield('head_link')
-	</nav>
-	<section class="section" style="padding: 1.5rem 1.5rem;">
-		<div class="container is-mobile is-hidden-desktop">
-			<div class="is-mobile">
-				<div class="columns is-mobile is-multiline">
-					<div class="column is-12-mobile">
-						<strong class="title">Hujan</strong>
-						<br><br><br>
-						<div class="columns is-mobile is-multiline has-text-centered">
-							<div class="column is-4-mobile">
-								<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#363636"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 5.69l5 4.5V18h-2v-6H9v6H7v-7.81l5-4.5M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/></svg>
-							</div>
-							<div class="column is-4-mobile">
-								<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#363636"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M8 16h8v2H8zm0-4h8v2H8zm6-10H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
-							</div>
-							<div class="column is-4-mobile">
-								<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#363636"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-							</div>
-						</div>
-					</div>			
-				</div>
-			</div>
+<style>
+  body{
+    overflow-x: hidden;
+  }
+</style>
+<body style="background:#f1f1f1" style="">
+	<div id="app">
+	<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="{{ url('user') }}">
+      <h1 class="title">Hujan</h1>
+    </a>
 
-			<br><br>
-		</div>
-	</section>
-	<div class="is-hidden-desktop">
-		@yield('head_link')
-	</div>
-	<div style="background:#f1f1f1" class="is-hidden-desktop">
-		
-		@yield('body_link')
-	</div>
-	<div class="is-hidden-mobile">
-		@yield('body_link')
-	</div>
-	@yield('foot_link')
+    <a role="button" class="navbar-burger" aria-label="menu" @click="showNav = !showNav" :class="{ 'is-active': showNav }">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
 
+  <div id="navbarBasicExample" class="navbar-menu" :class="{ 'is-active': showNav }">
+    <div class="navbar-start">
+
+      <a class="navbar-item" href="{{ url('user/nilai') }}">
+        Lihat nilai
+      </a>
+      <a class="navbar-item" href="{{ url('user/profile') }}">
+        Profile
+      </a>
+
+      
+    </div>
+
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <div class="buttons">
+          <form action="{{ url('user/logout/process') }}" method="post">
+            @csrf
+            <button class="button is-dark">
+               <strong>Log out</strong>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+</div>
+@yield('body_link')
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script>
+	new Vue({
+  el: '#app',
+  data: {
+  	showNav: false
+  }
+});
+</script>
 	<script>
 		setInterval(myTimer, 1000);
 

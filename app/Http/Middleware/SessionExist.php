@@ -17,12 +17,10 @@ class SessionExist
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Auth::user()->level == "user"){
             if($request->session()->get("accept")){
                 return redirect('user/accept/'.$request->session()->get("accept"));
             }
             return $next($request);
-        }
         
     }
 }

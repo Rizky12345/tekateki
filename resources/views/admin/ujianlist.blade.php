@@ -2,44 +2,78 @@
 
 @section('body_link')
 <div class="container">
-    
-@php
-$a = 0;
-@endphp
 
-@if($ujians->isEmpty())
-<h1 class="title">Hasil Ujian</h1>
-<div class="columns">
-    <div class="column ">
-        <h1 class="title" style="color: hsl(0, 0%, 86%);">Ujian Kosong</h1>
+    @php
+    $a = 0;
+    @endphp
+
+    @if($ujians->isEmpty())
+    <h1 class="title">Hasil Ujian</h1>
+    <div class="columns">
+        <div class="column ">
+            <h1 class="title" style="color: hsl(0, 0%, 86%);">Ujian Kosong</h1>
+        </div>
     </div>
-</div>
-@else
-<div class="card">
-    <div class="card-head">
-        <strong class="card-header-title">Ujian monitoring</strong>
-    </div>
-    <div class="card-content">
-        <div class="columns is-multiline is-10">
-            @foreach($ujians as $ujian)
+    @else
+    <div class="card">
+        <div class="card-head">
+            <strong class="card-header-title">Ujian monitoring</strong>
+        </div>
+        <div class="card-content">
+            <div class="columns is-multiline is-12">
+                @foreach($ujians as $ujian)
             @php
             $a = $a+1;
             @endphp
-
+            @if($ujian->repeat == "no")
             <div class="column is-4 has-text-centered">
+                @can('sadmin')
+                <a href="{{ url('s/admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="subtitle" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
+                @endcan
+                @can('admin')
                 <a href="{{ url('admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="subtitle" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
+                @endcan
                 <div id="divcanvas{{ $a }}" >
                     <canvas id="myChart{{ $a }}"></canvas>
                 </div>
             </div>
-            @endforeach
+            @else
 
+            @php
+            $count = 0;
+            foreach($nilais as $nilai){
+                if ($nilai->ujian_id == $ujian->id) {
+                    ++$count;
+                } 
+            }
+            @endphp
+            <div class="column is-4 has-text-centered">
+
+               @can('admin')
+                <a href="{{ url('admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="title" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
+                @endcan
+                @can('sadmin')
+                 <a href="{{ url('s/admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="title" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
+                @endcan
+                <h1>Jumlah yang mengerjakan</h1>
+                            <br>
+            <br>
+            <br>
+                <h1 class="title is-1">{{ $count }}</h1>
+                            <br>
+            <br>
+            <br>
+            </div>
+
+            @endif
+
+            @endforeach
+            </div>
         </div>
     </div>
-</div>
-@endif
+    @endif
 
-<br><br><br><br>
+    <br><br><br><br>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 @php
@@ -77,6 +111,7 @@ $belum = 0;
 @php
 $b = $b+1;
 $belum = $peserta - $sudah;
+$belum <= 0 ? $belum = 0 : $belum;
 @endphp
 
 <script>

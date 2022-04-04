@@ -5,8 +5,8 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	@php
-		$co = count($title);
-		$co--;
+	$co = count($title);
+	$co--;
 	@endphp
 	<title>{{ $title[$co] }}</title>
 
@@ -25,9 +25,6 @@
 				<a class="navbar-item is-hidden-desktop jb-aside-mobile-toggle">
 					<span class="icon"><i class="mdi mdi-forwardburger mdi-24px"></i></span>
 				</a>
-				<div class="navbar-item has-control">
-					<div class="control"><input placeholder="Search everywhere..." class="input"></div>
-				</div>
 			</div>
 			<div class="navbar-brand is-right">
 				<a class="navbar-item is-hidden-desktop jb-navbar-menu-toggle" data-target="navbar-menu">
@@ -36,215 +33,199 @@
 			</div>
 			<div class="navbar-menu fadeIn animated faster" id="navbar-menu">
 				<div class="navbar-end">
-					<div class="navbar-item has-dropdown has-dropdown-with-icons has-divider is-hoverable">
-						<a class="navbar-link is-arrowless">
-							<span class="icon"><i class="mdi mdi-menu"></i></span>
-							<span>Sample Menu</span>
-							<span class="icon">
-								<i class="mdi mdi-chevron-down"></i>
-							</span>
-						</a>
-						<div class="navbar-dropdown">
-							<a href="profile.html" class="navbar-item">
-								<span class="icon"><i class="mdi mdi-account"></i></span>
-								<span>My Profile</span>
-							</a>
-							<a class="navbar-item">
-								<span class="icon"><i class="mdi mdi-settings"></i></span>
-								<span>Settings</span>
-							</a>
-							<a class="navbar-item">
-								<span class="icon"><i class="mdi mdi-email"></i></span>
-								<span>Messages</span>
-							</a>
-							<hr class="navbar-divider">
-							<a class="navbar-item">
-								<span class="icon"><i class="mdi mdi-logout"></i></span>
-								<span>Log Out</span>
-							</a>
-						</div>
-					</div>
 					<div class="navbar-item has-dropdown has-dropdown-with-icons has-divider has-user-avatar is-hoverable">
-						<a class="navbar-link is-arrowless">
+						@php
+						$idddd = Auth::user()->user_id;
+						$namee = Auth::user()->name;
+						@endphp
+@can('sadmin')
+<a class="navbar-link is-arrowless" href="{{ url("s/admin/user/$idddd/$namee") }}">
 							<div class="is-user-avatar">
 								<img src="https://avatars.dicebear.com/v2/initials/john-doe.svg" alt="John Doe">
 							</div>
 							<div class="is-user-name"><span>{{ Auth::user()->name }}</span></div>
-							<span class="icon"><i class="mdi mdi-chevron-down"></i></span>
 						</a>
-						<div class="navbar-dropdown">
-							<a href="profile.html" class="navbar-item">
-								<span class="icon"><i class="mdi mdi-account"></i></span>
-								<span>My Profile</span>
-							</a>
-							<a class="navbar-item">
-								<span class="icon"><i class="mdi mdi-settings"></i></span>
-								<span>Settings</span>
-							</a>
-							<a class="navbar-item">
-								<span class="icon"><i class="mdi mdi-email"></i></span>
-								<span>Messages</span>
-							</a>
-							<hr class="navbar-divider">
-							
-							@can('admin')
-							<form action="{{ url('admin/logout') }}" method="post">
-								@csrf
-								<button class="navbar-item logout-hover">
-									<span class="icon"><i class="mdi mdi-logout"></i></span>
-									<span>logout</span>
-								</button>
-							</form>
-							@endcan
-							@can('sadmin')
-							<form action="{{ url('s/admin/logout') }}" method="post">
-								@csrf
-								<button class="button is-light">logout</button>
-							</form>
-							@endcan
-
+@endcan
+@can('admin')
+<a class="navbar-link is-arrowless" href="{{ url("admin/user/$idddd/$namee") }}">
+							<div class="is-user-avatar">
+								<img src="https://avatars.dicebear.com/v2/initials/john-doe.svg" alt="John Doe">
+							</div>
+							<div class="is-user-name"><span>{{ Auth::user()->name }}</span></div>
+						</a>
+@endcan
 						</div>
 					</div>
-					<a href="https://justboil.me/bulma-admin-template/one-html" title="About" class="navbar-item has-divider is-desktop-icon-only">
-						<span class="icon"><i class="mdi mdi-help-circle-outline"></i></span>
-						<span>About</span>
+					@can('admin')
+					<form action="{{ url('admin/logout') }}" method="post">
+						@csrf
+						<button class="navbar-item logout-hover pt-4 pb-4">
+							<span class="icon"><i class="mdi mdi-logout"></i></span>
+							<span>logout</span>
+						</button>
+					</form>
+					@endcan
+					@can('sadmin')
+					<form action="{{ url('s/admin/logout') }}" method="post">
+						@csrf
+						<button class="navbar-item logout-hover pt-4 pb-4">
+							<span class="icon"><i class="mdi mdi-logout"></i></span>
+							<span>logout</span>
+						</button>
+					</form>
+					@endcan
+				</a>
+			</div>
+		</div>
+	</nav>
+	<aside class="aside is-placed-left is-expanded">
+		<div class="aside-tools">
+			<div class="aside-tools-label">
+				<span><b>Admin</b> One HTML</span>
+			</div>
+		</div>
+		<div class="menu is-menu-main">
+			<p class="menu-label">General</p>
+			<ul class="menu-list">
+				<li>
+					@can('admin')
+					<a href="{{ url('admin') }}" class="is-active router-link-active has-icon">
+						<span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
+						<span class="menu-item-label">Dashboard</span>
 					</a>
-					<a title="Log out" class="navbar-item is-desktop-icon-only">
-						<span class="icon"><i class="mdi mdi-logout"></i></span>
-						<span>Log out</span>
+					@endcan
+					@can('sadmin')
+					<a href="{{ url('s/admin') }}" class="is-active router-link-active has-icon">
+						<span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
+						<span class="menu-item-label">Dashboard</span>
 					</a>
+					@endcan
+				</li>
+			</ul>
+			<p class="menu-label">Examples</p>
+			<ul class="menu-list">
+				@can('admin')
+				<li>
+					<a href="{{ url('admin/ujian') }}" class="has-icon">
+						<span class="icon"><i class="mdi mdi-table"></i></span>
+						<span class="menu-item-label">Ujian list</span>
+					</a>
+				</li>
+				<li>
+					<a href="{{ url('admin/ujian/ujianmonitoring') }}" class="has-icon">
+						<span class="icon"><i class="mdi mdi-monitor"></i></span>
+						<span class="menu-item-label">Forms</span>
+					</a>
+				</li>
+				@endcan
+				@can('sadmin')
+				<li>
+					<a href="{{ url('s/admin/ujian') }}" class="has-icon">
+						<span class="icon"><i class="mdi mdi-table"></i></span>
+						<span class="menu-item-label">Ujian list</span>
+					</a>
+				</li>
+				<li>
+					<a href="{{ url('s/admin/ujian/ujianmonitoring') }}" class="has-icon">
+						<span class="icon"><i class="mdi mdi-monitor"></i></span>
+						<span class="menu-item-label">Monitoring</span>
+					</a>
+				</li>
+				<li>
+					<a class="has-icon has-dropdown-icon">
+						<span class="icon"><i class="mdi mdi-account-circle"></i></span>
+						<span class="menu-item-label">Pengaturan User</span>
+						<div class="dropdown-icon">
+							<span class="icon"><i class="mdi mdi-plus"></i></span>
+						</div>
+					</a>
+					<ul>
+						<li>
+							<a href="{{ url('s/admin/user') }}">
+								<span>Tambah user</span>
+							</a>
+						</li>
+						<li>
+							<a href="{{ url('s/admin/user/alluser') }}">
+								<span>Semua user</span>
+							</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="{{ url('s/admin/ujian/all') }}" class="has-icon">
+						<span class="icon"><i class="mdi mdi-table"></i></span>
+						<span class="menu-item-label">Ujian list all</span>
+					</a>
+				</li>
+				<li>
+					<a href="{{ url('s/admin/ujian/ujianmonitoring/all') }}" class="has-icon">
+						<span class="icon"><i class="mdi mdi-monitor"></i></span>
+						<span class="menu-item-label">Monitoring all</span>
+					</a>
+				</li>
+				@endcan
+
+			</ul>
+		</div>
+	</aside>
+	<section class="section is-title-bar">
+		<div class="level">
+			<div class="level-left">
+				<div class="level-item">
+					<ul>
+						@php
+						$count = count($title);
+						@endphp
+
+						@for ($i = 0; $i < $count; $i++)
+						<li>{{ $title[$i] }}</li>
+						@endfor
+					</ul>
 				</div>
 			</div>
-		</nav>
-		<aside class="aside is-placed-left is-expanded">
-			<div class="aside-tools">
-				<div class="aside-tools-label">
-					<span><b>Admin</b> One HTML</span>
-				</div>
-			</div>
-			<div class="menu is-menu-main">
-				<p class="menu-label">General</p>
-				<ul class="menu-list">
-					<li>
-						@can('admin')
-						<a href="{{ url('admin') }}" class="is-active router-link-active has-icon">
-							<span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
-							<span class="menu-item-label">Dashboard</span>
-						</a>
-						@endcan
-						@can('sadmin')
-						<a href="{{ url('s/admin') }}" class="is-active router-link-active has-icon">
-							<span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
-							<span class="menu-item-label">Dashboard</span>
-						</a>
-						@endcan
-					</li>
-				</ul>
-				<p class="menu-label">Examples</p>
-				<ul class="menu-list">
-					<li>
-						<a href="{{ url('admin/ujian') }}" class="has-icon">
-							<span class="icon"><i class="mdi mdi-table"></i></span>
-							<span class="menu-item-label">Tables</span>
-						</a>
-					</li>
-					<li>
-						<a href="{{ url('admin/ujian/ujianmonitoring') }}" class="has-icon">
-							<span class="icon"><i class="mdi mdi-square-edit-outline"></i></span>
-							<span class="menu-item-label">Forms</span>
-						</a>
-					</li>
-					<li>
-						<a href="profile.html" class="has-icon">
-							<span class="icon"><i class="mdi mdi-account-circle"></i></span>
-							<span class="menu-item-label">Profile</span>
-						</a>
-					</li>
-					<li>
-						<a class="has-icon has-dropdown-icon">
-							<span class="icon"><i class="mdi mdi-view-list"></i></span>
-							<span class="menu-item-label">Submenus</span>
-							<div class="dropdown-icon">
-								<span class="icon"><i class="mdi mdi-plus"></i></span>
-							</div>
-						</a>
-						<ul>
-							<li>
-								<a href="#void">
-									<span>Sub-item One</span>
-								</a>
-							</li>
-							<li>
-								<a href="#void">
-									<span>Sub-item Two</span>
-								</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<p class="menu-label">About</p>
-				<ul class="menu-list">
-					<li>
-						<a href="https://admin-one-html.justboil.me/" target="_blank" class="has-icon">
-							<span class="icon"><i class="mdi mdi-credit-card-outline"></i></span>
-							<span class="menu-item-label">Premium Demo</span>
-						</a>
-					</li>
-					<li>
-						<a href="https://justboil.me/bulma-admin-template/one-html" class="has-icon">
-							<span class="icon"><i class="mdi mdi-help-circle"></i></span>
-							<span class="menu-item-label">About</span>
-						</a>
-					</li>
-				</ul>
-			</div>
-		</aside>
-		<section class="section is-title-bar">
+		</div>
+	</section>
+	<section class="hero is-hero-bar">
+		<div class="hero-body">
 			<div class="level">
 				<div class="level-left">
-					<div class="level-item">
-						<ul>
-							@php
-								$count = count($title);
-							@endphp
-						
-							@for ($i = 0; $i < $count; $i++)
-								<li>{{ $title[$i] }}</li>
-							@endfor
-						</ul>
-					</div>
+					<div class="level-item"><h1 class="title">
+						@if(isset($ujian))
+						@php
+						$count--;
+						@endphp
+						@if($ujian->code == $title[$count])
+						{{ $ujian->judul }}({{ $title[$count] }})
+						@else
+						{{ $title[$count] }}
+						@endif
+						@else
+						@php
+						$count--;
+						@endphp
+						{{ $title[$count] }}
+						@endif
+					</h1></div>
+				</div>
+				<div class="level-right" style="display: none;">
+					<div class="level-item"></div>
 				</div>
 			</div>
-		</section>
-		<section class="hero is-hero-bar">
-			<div class="hero-body">
-				<div class="level">
-					<div class="level-left">
-						<div class="level-item"><h1 class="title">
-							@php
-								$count--;
-							@endphp
-							{{ $title[$count] }}
-						</h1></div>
-					</div>
-					<div class="level-right" style="display: none;">
-						<div class="level-item"></div>
-					</div>
-				</div>
-			</div>
-		</section>
+		</div>
+	</section>
 
-		<section class="section">
-			@yield('body_link')
-		</section>
+	<section class="section">
+		@yield('body_link')
+	</section>
 
-	</div>
-	<!-- Scripts below are for demo only -->
-	<script type="text/javascript" src="js/main.min.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
-	<script type="text/javascript" src="js/chart.sample.min.js"></script>
+</div>
+<!-- Scripts below are for demo only -->
+<script type="text/javascript" src="{{ asset('js/main.min.js') }}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+<script type="text/javascript" src="js/chart.sample.min.js"></script>
 
-	<!-- Icons below are for demo only. Feel free to use any icon pack. Docs: https://bulma.io/documentation/elements/icon/ -->
-	<link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
+<!-- Icons below are for demo only. Feel free to use any icon pack. Docs: https://bulma.io/documentation/elements/icon/ -->
+<link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
 </body>
 </html>

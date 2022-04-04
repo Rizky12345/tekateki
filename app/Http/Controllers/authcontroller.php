@@ -17,7 +17,7 @@ class authcontroller extends Controller
     public function authenticate(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'user_id' => ['required', 'integer'],
             'password' => ['required'],
         ]);
         if (Auth::attempt($credentials)) {
@@ -28,21 +28,12 @@ class authcontroller extends Controller
         }
 
         return back()->withErrors([
-            'messege' => 'email dan password salah',
+            'messege' => 'user id dan password salah',
         ]);
-    }
-    public function register(Request $request){
-        $register = new User;
-        $register->name = $request->name;
-        $register->email = $request->email;
-        $register->level = "user";
-        $register->password = Hash::make($request->password);
-        $register->save();
-        return redirect('login');
     }
     public function logout(){
         AUTH::logout();
-        return redirect('login');
+        return redirect('/login');
     }
     public function page(){
         if (!isset(Auth::user()->name)) {
