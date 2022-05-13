@@ -7,6 +7,7 @@
 	}
 	
 </style>
+
 @if(session('success'))
 <div class="notification is-success">
 	{{ session('success') }}
@@ -17,9 +18,14 @@
 	{{ session('failed') }}
 </div>
 @endif
+@if(session('alert'))
+<div class="notification is-danger">
+	{{ session('alert') }}
+</div>
+@endif
 @if($errors->first('name') || $errors->first('password') || $errors->first('nim') || $errors->first('kelas') || $errors->first('level'))
 <div class="notification is-danger">
-	Semua data harus di isi
+	Semua data harus di isi dan nim harus diisi menggunakan angka
 </div>
 @endif
 <form action="{{ url('s/admin/user/process') }}" method="POST">
@@ -73,7 +79,7 @@
 						<div class="field-body">
 							<div class="field">
 								<div class="control">
-									<input class="input" type="text" placeholder="Normal sized input" name="nim" autocomplete="off">
+									<input class="input" type="text" placeholder="Normal sized input" name="user_id" autocomplete="off">
 									<small class="is-small"><strong>harus di isi dengan angka</strong></small>
 								</div>
 							</div>
@@ -214,7 +220,7 @@
 					<div class="modal-background"></div>
 					<div class="modal-content">
 						<div class="box is-3 has-text-centered">
-							<p class="title">Hapus Ujian?</p>
+							<p class="title">Hapus pengguna?</p>
 							<form action="{{ url("s/admin/user/destroy") }}" method="post">
 								@csrf
 								<input type="text" class="is-hidden" value="{{ $user->id }}" name="id">
@@ -298,7 +304,7 @@
 		</table>
 		@endif
 		@if($count>2)
-		<div><a href="{{ url('s/admin/user/all') }}"><strong>Selengkapnya</strong></a></div>
+		<div><a href="{{ url('s/admin/user/alluser') }}"><strong>Selengkapnya</strong></a></div>
 		@endif
 	</div>
 </div>

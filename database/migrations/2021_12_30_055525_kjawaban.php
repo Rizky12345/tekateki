@@ -15,7 +15,7 @@ class Kjawaban extends Migration
     {
         Schema::create('kjawabans', function(Blueprint $table){
             $table->id();
-            $table->string('jawaban');
+            $table->string('jawaban')->nullable();
             $table->string('image')->nullable();
             $table->foreignId("soal_id");
             $table->foreignId("user_id");

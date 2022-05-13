@@ -13,11 +13,28 @@
 				</div>
 
 				<div class="card-content">
+					@if($errors->first('image'))
+						<div class="notification is-danger">
+						file harus gambar yang sizenya kurang dari 2MB
+						</div>
+					@endif
 					@if(session('alert'))
-				<div class="notification {{ session('color') }}">
-					{{ session('alert') }}
+					<div class="notification {{ session('color') }}">
+						{{ session('alert') }}
+					</div>
+					@endif
+					<div class="columns is-centered">
+				<div class="column is-6">
+					<figure class="image image is-square">
+						@if(Auth::user()->image == NULL)
+						<img class="is-rounded" src="{{ asset('image/default.png') }}">
+						@else
+
+						<img class="is-rounded" src="{{ asset("storage/".Auth::user()->image ) }}">
+						@endif
+					</figure>
 				</div>
-				@endif
+			</div>
 					<div class="field is-horizontal">
 						<div class="field-label is-normal">
 							<label class="label">Name</label>
@@ -42,7 +59,7 @@
 							</div>
 						</div>
 					</div>
-					<form action="{{ url('user/profile/ubah') }}" method="post">
+					<form action="{{ url('user/profile/ubah') }}" method="post" enctype="multipart/form-data">
 						@csrf
 						<div class="field is-horizontal">
 							<div class="field-label is-normal">
@@ -52,10 +69,42 @@
 								<div class="field">
 									<p class="control">
 										<input type="password" name="password" class="input">
+										<small>jika tidak mengganti password, kosongkan saja</small>
 									</p>
 								</div>
 							</div>
 						</div>
+						<div class="field is-horizontal">
+							<div class="field-label is-normal">
+								<label class="label">Image</label>
+							</div>
+							<div class="field-body">
+								<div class="field">
+									<p class="control">
+										<div id="file-js-example" class="file has-name">
+											<div class="file is-small">
+												<label class="file-label">
+													<input class="file-input" type="file" name="image">
+													<span class="file-cta">
+														<span class="file-icon">
+															<i class="mdi mdi-upload"></i>
+														</span>
+														<span class="file-label">
+															Small file…
+														</span>
+
+													</span>
+												</label>
+												<span class="file-name">
+															No file uploaded
+														</span>
+											</div>
+										</div>
+									</p>
+								</div>
+							</div>
+						</div>
+						
 						<div class="field is-horizontal">
 							<div class="field-label is-normal">
 								<label class="label">
@@ -86,4 +135,13 @@
 		</p>
 	</div>
 </footer>
+<script>
+	const fileInput = document.querySelector('#file-js-example input[type=file]');
+	fileInput.onchange = () => {
+		if (fileInput.files.length > 0) {
+			const fileName = document.querySelector('#file-js-example .file-name');
+			fileName.textContent = fileInput.files[0].name;
+		}
+	}
+</script>
 @endsection

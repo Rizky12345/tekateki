@@ -5,6 +5,7 @@
 	<title>{{ $title }}</title>
 	<link rel="stylesheet" href="{{ url('bulma/css/bulma.min.css') }}">
 	<link rel="stylesheet" href="{{ url('costume.css') }}">
+ <link rel="stylesheet" href="{{ asset("css/materialdesignicons.min.css") }}">
 </head>
 <style>
   body{
@@ -55,7 +56,7 @@
 </nav>
 </div>
 @yield('body_link')
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script src="{{ asset("js/vue.js") }}"></script>
 <script>
 	new Vue({
   el: '#app',

@@ -108,6 +108,7 @@ $belum = 0;
 @endif
 @endforeach
 @endforeach
+
 @php
 $b = $b+1;
 $belum = $peserta - $sudah;

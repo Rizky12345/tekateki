@@ -2,6 +2,8 @@
 @extends('../layout/head_link')
 
 @section('body_link')
+	@php $page = 1; @endphp
+@if(!isset($_GET['page'] )) @php $page = 1; @endphp @else @php $page = $_GET['page']; @endphp @endif
 <section class="section" style="padding: 1.5rem 1.5rem; padding-bottom: 0px;">
 	<div class="container">
 		<div class="is-mobile">
@@ -79,12 +81,26 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 							{{ $pilihan->pilihan }}
 
 						</label>
-						<img src="{{ asset("storage/$pilihan->image") }}" alt=""><br>
+						<br>
+						@if($pilihan->image != NULL)
+						<div class="columns">
+							<div class="column is-5">
+								<div class="card">
+									<div class="card-content">
+										<figure class="image is-square">
+											<img src="{{ asset("storage/$pilihan->image") }}" alt="">
+										</figure>
+									</div>
+								</div>
+							</div>
+						</div>
+						@endif
+						
 						@endforeach
 						@endif
 					</div>
 
-			{{ $soals->links('../plihan_p') }}
+					{{ $soals->links('../plihan_p') }}
 				</div>
 			</div>
 		</div>
@@ -105,10 +121,19 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 	<div class="container">
 		<div class="">
 			<div class="card columns is-mobile is-multiline is-12">
+				@php
+				$nomer = collect([]);
+				@endphp
 				@for($i=1; $i<$count;$i++)
-				<a href="/user/accept/{{ session()->get("accept") }}?page={{ $i }}" class="column card is-1-desktop is-3-mobile has-text-centered pt-5 pb-5">
+				@if(session('arr')->contains($i) == true)
+				<a href="/user/accept/{{ session()->get("accept") }}?page={{ $i }}" class="column card is-1-desktop is-3-mobile has-text-centered pt-5 pb-5"  @if($page == $i) style="background: hsl(0, 0%, 21%); color: white;" @endif style="background:hsl(141, 71%, 48%); color: white;" id="id{{ $i }}">
 					{{ $i }}
 				</a>
+				@else
+				<a href="/user/accept/{{ session()->get("accept") }}?page={{ $i }}" class="column card is-1-desktop is-3-mobile has-text-centered pt-5 pb-5" @if($page == $i) style="background: hsl(0, 0%, 21%); color: white;" @endif id="id{{ $i }}">
+					{{ $i }}
+				</a>
+				@endif
 				@endfor
 			</div>
 		</div>
@@ -149,6 +174,7 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 			</p>
 		</div>
 	</footer>
+
 	<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 
 	<script type="text/javascript">
@@ -167,12 +193,16 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 				url: '{{ url("user/accept/".session()->get('accept')."/test") }}',
 				data: {
 					'jawaban': jawaban,
+					'page': {{ $page }},
 					'id': id,
 					'nilai_id': nilai_id,
 					'pilihan_id': pilihan_id
 
 				},
 				success: function(data) {
+					for (var i = Things.length - 1; i >= 0; i--) {
+						Things[i]
+					}
 				}
 			});
 		} 
@@ -204,6 +234,7 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 				data: {
 					'jawaban': value,
 					'soal_id': id,
+					'page': {{ $page }},
 					'nilai_id': nilai_id
 
 				},
@@ -284,7 +315,7 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
     if (e.keyCode === 27) { // Escape key
     	closeAllModals();
     }
-});
+  });
 });
 </script>
 @endsection

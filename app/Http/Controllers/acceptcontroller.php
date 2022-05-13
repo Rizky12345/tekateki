@@ -50,6 +50,8 @@ class acceptcontroller extends Controller
 	public function store(Request $request, $random){
 		$jawabans = DB::table('Jawabans')->where('user_id', Auth::user()->id)->where('soal_id', $request['id'])->where('nilai_id', session()->get('nilai'))->get();
 		$ujian = Ujian::where('code','=',session()->get('code'))->first();
+		$collect = session('arr');
+		$collect->push($request->page);
 		if($jawabans->isEmpty()){
 			$save = new Jawaban;
 			$save->jawaban = $request['jawaban'];
@@ -116,5 +118,7 @@ class acceptcontroller extends Controller
 			'title'=> 'break'
 		]);
 	}
-
+	public function user_table(){
+		return view('user_table');
+	}
 }

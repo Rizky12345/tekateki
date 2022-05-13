@@ -67,12 +67,13 @@ class sadmincontroller extends Controller
         $ujians = Ujian::orderBy('id','desc')->get();
         $arr = collect([]);
         $arr2 = collect([]);
+        $arr3 = collect([]);
         foreach($ujians as $ujian){
             $arr->push($ujian->id);
             $arr2->push($ujian->kelase_id);
         }
         $nilai = Nilai::whereIn('ujian_id',$arr)->get();
-        
+
         $user = User::whereIn('kelase_id', $arr2)->where('level','=', "user")->get();
         $nilai_user = Nilai::where('user_id','=',Auth::user()->id)->get();
         $ujian_all = Ujian::where('user_id','=',Auth::user()->id)->get();
@@ -89,6 +90,7 @@ class sadmincontroller extends Controller
     public function montoringcode($code){
         $ujian = Ujian::where('code','=',$code)->first();
         $nilai = Nilai::where('ujian_id','=',$ujian->id)->get();
+        $group = $nilai->unique('user_id');
         $users = User::where('kelase_id','=',Auth::user()->kelase_id)->where('level','=','user')->get();
         $soals = Soal::where('ujian_id','=',$ujian->id)->get();
         return view('admin/monitoringcode',[
@@ -96,6 +98,7 @@ class sadmincontroller extends Controller
             'title'=>['super admin','Ujian monitoring',$code],
             'nilais'=>$nilai,
             'users'=>$users,
+            'group'=>$group,
             'soals'=>$soals
         ]);
     }
@@ -191,18 +194,38 @@ class sadmincontroller extends Controller
         ]);
     }
     public function userprocess(Request $request){
+        
         $validate = $request->validate([
             'name' => 'required',
             'password' => 'required',
-            'nim' => 'required|integer', 
+            'user_id' => 'required|integer', 
             'kelas' => 'required|integer',
             'level' => 'required',
         ]);
+
+        $account_all = user::all();
+$collect = collect([]);
+                foreach ($account_all as $all) {
+                    if($all->user_id == $request->user_id){
+                        $collect->push($all->user_id);
+                    }   
+                }
+                if ($collect->count() >= 1) {
+                    return back()->with('alert', 'user_id tidak boleh duplikat')->with('color','is-danger');                     
+                }else{
+                    $user = User::where('user_id','=',$request->user_id)->update([
+                        'name'=>$request->name,
+                        'user_id'=>$request->user_id,
+                        'kelase_id'=>$request->kelase,
+                        'level'=>$request->level,
+                    ]);
+                }
         $user = new User;
         $user->name = $request->name;
         $user->password = Hash::make($request->password);
-        $user->user_id = $request->nim;
+        $user->user_id = $request->user_id;
         $user->kelase_id = $request->kelas;
+        $user->image = NULL;
         $user->level = $request->level;
         $user->save();
 
@@ -254,13 +277,13 @@ class sadmincontroller extends Controller
         $nilai = Nilai::where('user_id','=', $user->id)->delete();
         $jawaban = Jawaban::where('user_id','=',$user->id)->delete();
         $kjawaban = Kjawaban::where('user_id','=',$user->id)->delete();
+        $ujian = Ujian::where('user_id','=',$user->id)->delete();
         $users = User::where('id','=',$request->id)->delete();
 
         return back()->with('success','Pengguna di hapus');
     }
     public function edituser(Request $request, $user_id){
-
-        if($request->password == NULL){
+        if($request->image == null && $request->password == null){
             $validate = $request->validate([
                 'name'=>'required',
                 'user_id'=>'required|min:10',
@@ -276,8 +299,6 @@ class sadmincontroller extends Controller
                     'kelase_id'=>$request->kelase,
                     'level'=>$request->level,
                 ]);
-                $users = User::where('user_id','=',$request->user_id)->first();
-                return redirect("s/admin/user/$users->user_id/$users->name")->with('alert', 'data berhasil di ubah')->with('color','is-success');
             }else{
                 $collect = collect([]);
                 foreach ($account_all as $all) {
@@ -294,15 +315,53 @@ class sadmincontroller extends Controller
                         'kelase_id'=>$request->kelase,
                         'level'=>$request->level,
                     ]);
-                    $users = User::where('user_id','=',$request->user_id)->first();
-                    return redirect("s/admin/user/$users->user_id/$users->name")->with('alert', 'data berhasil di ubah')->with('color','is-success');
+                }
+            }
+        }if($request->image != null){
+            $validate = $request->validate([
+                'name'=>'required',
+                'user_id'=>'required|min:10',
+                'kelase'=>'required',
+                'level'=>'required',
+                'image'=>'image|file|max:2048',
+            ]);
+            $account = User::where('user_id','=',$user_id)->first();
+            if($account->image != null) {
+                Storage::delete($account->image);
+            }
+            $filename = $request->file("image")->store('image');
+            $user = User::where('user_id','=',$user_id)->update([
+                'image'=>$filename
+            ]);
+            
+            $account_all = User::all();
+            if($account->user_id == $request->user_id){
+                $user = User::where('user_id','=',$user_id)->update([
+                    'name'=>$request->name,
+                    'user_id'=>$request->user_id,
+                    'kelase_id'=>$request->kelase,
+                    'level'=>$request->level,
+                ]);
+            }else{
+                $collect = collect([]);
+                foreach ($account_all as $all) {
+                    if($all->user_id == $request->user_id){
+                        $collect->push($all->user_id);
+                    }   
+                }
+                if ($collect->count() >= 1) {
+                    return back()->with('alert', 'user_id tidak boleh duplikat')->with('color','is-danger');                     
+                }else{
+                    $user = User::where('user_id','=',$user_id)->update([
+                        'name'=>$request->name,
+                        'user_id'=>$request->user_id,
+                        'kelase_id'=>$request->kelase,
+                        'level'=>$request->level,
+                    ]);
                 }
             }
 
-
-            $users = User::where('user_id','=',$request->user_id)->first();
-            return redirect("s/admin/user/$users->user_id/$users->name")->with('alert', 'data berhasil di ubah')->with('color','is-success');
-        }else{
+        }if($request->password != null){
             $validate = $request->validate([
                 'name'=>'required',
                 'password'=>'required|min:6',
@@ -317,13 +376,10 @@ class sadmincontroller extends Controller
                     $user = User::where('user_id','=',$user_id)->update([
                         'name'=>$request->name,
                         'user_id'=>$request->user_id,
-                        'password'=>Hash::make($request->password),
                         'kelase_id'=>$request->kelase,
                         'level'=>$request->level
                     ]);
                     Auth::user()->update(['password'=>Hash::make($request->password)]);
-                    $users = User::where('user_id','=',$request->user_id)->first();
-                    return redirect("s/admin/user/$users->user_id/$users->name")->with('alert', 'data berhasil di ubah')->with('color','is-success');
                 }else{
                     $user = User::where('user_id','=',$user_id)->update([
                         'name'=>$request->name,
@@ -332,10 +388,7 @@ class sadmincontroller extends Controller
                         'kelase_id'=>$request->kelase,
                         'level'=>$request->level
                     ]);
-                    $users = User::where('user_id','=',$request->user_id)->first();
-                    return redirect("s/admin/user/$users->user_id/$users->name")->with('alert', 'data berhasil di ubah')->with('color','is-success');
                 }
-
             }else{
                 $collect = collect([]);
                 foreach ($account_all as $all) {
@@ -353,13 +406,10 @@ class sadmincontroller extends Controller
                         'kelase_id'=>$request->kelase,
                         'level'=>$request->level
                     ]);
-                    Auth::user()->update(['password'=>Hash::make($request->password)]);
-                    $users = User::where('user_id','=',$request->user_id)->first();
-                    return redirect("s/admin/user/$users->user_id/$users->name")->with('alert', 'data berhasil di ubah')->with('color','is-success');
                 }
             }
         }
-
+        $users = User::where('user_id','=',$request->user_id)->first();
+        return redirect("s/admin/user/$users->user_id/$users->name")->with('alert', 'data berhasil di ubah')->with('color','is-success');
     }
-
 }

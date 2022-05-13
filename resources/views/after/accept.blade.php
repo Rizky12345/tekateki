@@ -28,7 +28,7 @@
 				if (date("Y-m-d H:i:s", strtotime($ujian->time->date_time)) > date("Y-m-d H:i:s", strtotime($time))) {
 					$status = "Ujian Belum dimulai";
 				}elseif(date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($ujian->time->date_time))) <= date("Y-m-d H:i:s", strtotime($time))){
-					$status = "Ujian Belakhir";
+					$status = "Ujian Berakhir";
 				}elseif (date("Y-m-d H:i:s", strtotime($ujian->time->date_time)) <= date("Y-m-d H:i:s", strtotime($time))) {
 					$status = "Ujian di mulai";
 				}
@@ -48,7 +48,7 @@
 			@if($ujian->time->date_time != NULL)
 	@if($ujian->repeat == 'no')
 	@if($nilai->isEmpty())
-	@if($status == "Ujian Belum dimulai" || $status ==  "Ujian Belakhir")
+	@if($status == "Ujian Belum dimulai" || $status ==  "Ujian Berakhir")
 	<button class="button is-dark" disabled>Accept</button>
 	@else
 	<a href="{{ url("user/accept/choice/$ujian->code") }}" >
@@ -60,7 +60,7 @@
 	<p class="has-text-danger">Kamu sudah menyelesaikan Ujian ini</p>
 	@endif
 	@else
-	@if($status == "Ujian Belum dimulai" || $status ==  "Ujian Belakhir")
+	@if($status == "Ujian Belum dimulai" || $status ==  "Ujian Berakhir")
 	<button class="button is-dark" disabled>Accept</button>
 	@else
 	<a href="{{ url("user/accept/choice/$ujian->code") }}" >

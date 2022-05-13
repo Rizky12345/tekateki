@@ -7,10 +7,12 @@ use App\Models\Ujian;
 use App\Models\Soal;
 use App\Models\Pilihan;
 use App\Models\Kjawaban;
+use App\Models\Jawaban;
 use App\Models\Time;
 use App\Models\Mapel;
 use App\Models\Nilai;
 use App\Models\Kelase;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
@@ -297,12 +299,22 @@ class ujiancontroller extends Controller
     }
     public function tambahsoal(Request $request){
         $soal = new Soal;
-        $soal->soal = $request['soal'];
-        $soal->type = $request['type'];
+        $soal->soal = "";
+        $soal->type = "pilihan";
         $soal->ujian_id = $request['ujian_id'];
         $soal->save();
 
-        return $soal;
+        $pilihan1 = new Pilihan;
+        $pilihan1->pilihan = "";
+        $pilihan1->soal_id = $soal->id;
+        $pilihan1->save();
+        
+        $pilihan2 = new Pilihan;
+        $pilihan2->pilihan = "";
+        $pilihan2->soal_id = $soal->id;
+        $pilihan2->save();
+
+        return [$soal, $pilihan1, $pilihan2];
     }
     public function tambahpilihan(Request $request){
         $pilihan = new Pilihan;
@@ -424,7 +436,7 @@ class ujiancontroller extends Controller
             'status'=>'required',
             'mapel'=>'required',
             'time'=>'required|integer',
-            'soal'=>'integer',
+            'soal'=>'required|integer',
             'pilihan'=>'integer'
         ]);
         $time = Carbon::now('Asia/Jakarta');
@@ -465,14 +477,14 @@ class ujiancontroller extends Controller
         if($request->soal != NULL) {
             for($i=0;$i<$request->soal;$i++){
                 $soal = new soal;
-                $soal->soal = "Masukkan soal";
+                $soal->soal = "";
                 $soal->type = "pilihan";
                 $soal->ujian_id = $ujian->id;
                 $soal->save();
 
                 for ($b=0; $b < $request->pilihan; $b++) { 
                     $pilihan = new Pilihan;
-                    $pilihan->pilihan = "Masukkan nilai pilihan";
+                    $pilihan->pilihan = "";
                     $pilihan->soal_id = $soal->id;
                     $pilihan->save();
                 }
@@ -550,10 +562,44 @@ class ujiancontroller extends Controller
         return back()->with('success', 'ujian dihapus');
     }
     public function serahkan($code){
-        dd($code);
         $ujian = Ujian::where('code','=',$code)->update([
             'serahkan'=>'yes'
         ]);
-        return back()->with('success', 'Nilai ujian diserahkan');
+        return redirect('s/admin/ujian/ujianmonitoring/'.$code)->with('success', 'Nilai ujian diserahkan');
+    }
+    public function periksa($code, $user_id, $nilai_id){
+        $nilai = Nilai::where('id','=',$nilai_id)->first();
+        $ujian = Ujian::where('code','=',$code)->first();
+        if ($nilai->ujian_id != $ujian->id || $nilai->user_id != $user_id || $nilai->id != $nilai_id) {
+            return abort(403);
+        }
+        $user = User::where('id','=',$user_id)->first();
+        if ($user->kelase_id != Auth::user()->kelase_id) {
+            return abort(403);
+        }
+        $soals = Soal::where('ujian_id','=',$nilai->ujian_id)->get();
+        $collect = collect([]);
+        foreach($soals as $soal){
+            $collect->push($soal->id);
+        }
+        $pilihans = Pilihan::whereIn('soal_id', $collect)->get();
+        $jawabans = Jawaban::where('nilai_id','=',$nilai_id)->get();
+        $kjawabans = Kjawaban::whereIn('soal_id', $collect)->get();
+        return view('admin/jawaban',[
+            'title'=>['admin',"monitoring ujian $ujian->judul","Periksa Jawaban $user->name"],
+            'soals'=>$soals,
+            'pilihans'=>$pilihans,
+            'jawabans'=>$jawabans,
+            'kjawabans'=>$kjawabans,
+        ]);
+    }
+    public function nilai_destroy(Request $request,$code, $user_id, $nilai_id){
+        $nilai = Nilai::where('id','=',$request->nilai_id)->first();
+        $ujian = Ujian::where('code','=',$code)->first();
+        if ($nilai->ujian_id != $ujian->id || $nilai->user_id != $user_id || $nilai->id != $nilai_id) {
+            return abort(403);
+        }
+        $nilai = Nilai::where('id','=',$request->nilai_id)->delete();
+        return redirect('admin/ujian/ujianmonitoring/'.$code)->with('sukses', "Data di Hapus");;
     }
 }

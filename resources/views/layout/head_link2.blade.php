@@ -16,7 +16,7 @@
 
 	<!-- Fonts -->
 	<link rel="dns-prefetch" href="https://fonts.gstatic.com">
-	<link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
+	<link href="{{ asset("css/googleapis.css") }}" rel="stylesheet" type="text/css">
 </head>
 <body>
 	<div id="app">
@@ -114,7 +114,7 @@
 				<li>
 					<a href="{{ url('admin/ujian/ujianmonitoring') }}" class="has-icon">
 						<span class="icon"><i class="mdi mdi-monitor"></i></span>
-						<span class="menu-item-label">Forms</span>
+						<span class="menu-item-label">Monitoring</span>
 					</a>
 				</li>
 				@endcan
@@ -222,7 +222,7 @@
 </div>
 <!-- Scripts below are for demo only -->
 <script type="text/javascript" src="{{ asset('js/main.min.js') }}"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+<script type="text/javascript" src="{{ asset('js/Chart.min.js') }}"></script>
 <script type="text/javascript" src="js/chart.sample.min.js"></script>
 
 <!-- Icons below are for demo only. Feel free to use any icon pack. Docs: https://bulma.io/documentation/elements/icon/ -->

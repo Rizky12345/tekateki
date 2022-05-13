@@ -183,7 +183,7 @@
 								<div class="modal-background"></div>
 								<div class="modal-content">
 									<div class="box is-3 has-text-centered">
-										<p class="title">Hapus Ujian?</p>
+										<p class="title">Hapus pengguna?</p>
 										<form action="{{ url("s/admin/user/destroy") }}" method="post">
 											@csrf
 											<input type="text" class="is-hidden" value="{{ $user->id }}" name="id">
@@ -235,7 +235,7 @@
 								<div class="modal-background"></div>
 								<div class="modal-content">
 									<div class="box is-3 has-text-centered">
-										<p class="title">Hapus Ujian?</p>
+										<p class="title">Hapus pengguna?</p>
 										<form action="{{ url("s/admin/user/destroy") }}" method="post">
 											@csrf
 											<input type="text" class="is-hidden" value="{{ $user->id }}" name="id">
@@ -290,7 +290,7 @@
 						<div class="modal-background"></div>
 						<div class="modal-content">
 							<div class="box is-3 has-text-centered">
-								<p class="title">Hapus Ujian?</p>
+								<p class="title">Hapus pengguna?</p>
 								<form action="{{ url("s/admin/user/destroy") }}" method="post">
 									@csrf
 									<input type="text" class="is-hidden" value="{{ $user->id }}" name="id">

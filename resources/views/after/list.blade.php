@@ -48,7 +48,13 @@
 				<div class="columns is-mobile is-multiline">
 					<div class="column is-2-desktop is-3-mobile ml-3">
 						<figure class="image">
-							<img src="../image/pp.jpg" alt="" class="is-rounded is-50x50">
+							@if($list->user->image != null)
+							
+							<img src="{{ asset('storage/'.$list->user->image) }}" alt="" class="is-rounded is-50x50">
+							@else
+
+							<img src="{{ asset('image/default.png') }}" alt="" class="is-rounded is-50x50">
+							@endif
 						</figure>
 					</div>
 					<div class="column is-8-mobile">
@@ -72,7 +78,13 @@
 				<div class="columns is-mobile is-multiline">
 					<div class="column is-2-desktop is-3-mobile ml-3">
 						<figure class="image">
-							<img src="../image/pp.jpg" alt="" class="is-rounded is-50x50">
+							@if($list->user->image != null)
+							
+							<img src="{{ asset('storage/'.$list->user->image) }}" alt="" class="is-rounded is-50x50">
+							@else
+
+							<img src="{{ asset('image/default.png') }}" alt="" class="is-rounded is-50x50">
+							@endif
 						</figure>
 					</div>
 					<div class="column is-8-mobile">

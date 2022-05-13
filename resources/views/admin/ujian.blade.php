@@ -12,7 +12,7 @@
 		<button class="button">Buat Ujian</button>
 	</a>
 	@endcan
-		@can('sadmin')
+	@can('sadmin')
 	<a href="{{ url('s/admin/ujian/create') }}">
 		<button class="button">Buat Ujian</button>
 	</a>
@@ -55,18 +55,18 @@
 					<tr>
 						<td>{{ ++$nomer }}</td>
 						<div id="modal-js-example{{ $nomer }}" class="modal">
-						<div class="modal-background"></div>
-						<div class="modal-content">
-							<div class="box is-3 has-text-centered">
-								<p class="title">Hapus Ujian?</p>
-								<form action="{{ url("admin/ujian/$ujian->code/destroy") }}" method="post">
-									@csrf
-									<input type="text" class="is-hidden" value="{{ $ujian->id }}" name="id">
-									<button class="button is-danger">Hapus</button>
-								</form>
+							<div class="modal-background"></div>
+							<div class="modal-content">
+								<div class="box is-3 has-text-centered">
+									<p class="title">Hapus Ujian?</p>
+									<form action="{{ url("admin/ujian/$ujian->code/destroy") }}" method="post">
+										@csrf
+										<input type="text" class="is-hidden" value="{{ $ujian->id }}" name="id">
+										<button class="button is-danger">Hapus</button>
+									</form>
+								</div>
 							</div>
 						</div>
-					</div>
 						<td>{{ $ujian->judul }}</td>
 						<td>{{ $ujian->code }}</td>
 						<td>{{ $ujian->status }}</td>
@@ -90,20 +90,20 @@
 					<tr>
 						<td>{{ ++$nomer }}</td>
 						<div id="modal-js-example{{ $nomer }}" class="modal">
-						<div class="modal-background"></div>
-						<div class="modal-content">
-							<div class="box is-3 has-text-centered">
-								<p class="title">Hapus Ujian?</p>
-								<form action="{{ url("s/admin/ujian/$ujian->code/destroy") }}" method="post">
-									@csrf
-									<input type="text" class="is-hidden" value="{{ $ujian->id }}" name="id">
-									<button class="button is-danger">Hapus</button>
+							<div class="modal-background"></div>
+							<div class="modal-content">
+								<div class="box is-3 has-text-centered">
+									<p class="title">Hapus Ujian?</p>
+									<form action="{{ url("s/admin/ujian/$ujian->code/destroy") }}" method="post">
+										@csrf
+										<input type="text" class="is-hidden" value="{{ $ujian->id }}" name="id">
+										<button class="button is-danger">Hapus</button>
 
-								</form>
+									</form>
 
+								</div>
 							</div>
 						</div>
-					</div>
 						<td>{{ $ujian->judul }}</td>
 						<td>{{ $ujian->code }}</td>
 						<td>{{ $ujian->status }}</td>
@@ -116,7 +116,9 @@
 									</button>
 								</a>
 								<button class="button is-small is-dark js-modal-trigger" data-target="modal-js-example{{ $nomer }}">
-									<span class="icon"><i class="mdi mdi-trash-can"></i></span>
+									<span class="icon">
+										<i class="mdi mdi-trash-can"></i>
+									</span>
 								</button>
 							</div>
 						</td>

@@ -15,7 +15,7 @@ class Soal extends Migration
     {
         Schema::create('soals', function(Blueprint $table){
             $table->id();
-            $table->text("soal");
+            $table->text("soal")->nullable();
             $table->string("type");
             $table->string("image")->nullable();
             $table->foreignId("ujian_id");

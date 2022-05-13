@@ -17,8 +17,9 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('name');
             $table->foreignId('kelase_id')->nullable();
-            $table->integer('user_id')->unique();
+            $table->integer('user_id',30)->unique();
             $table->string('password');
+            $table->string('image');
             $table->string('level');
             $table->rememberToken();
             $table->timestamps();

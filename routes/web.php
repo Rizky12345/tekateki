@@ -43,14 +43,10 @@ Route::get('/break', function () {
     return view("after/break");
 });
 Route::get('/login', [authcontroller::class,'page'])->name('login');
-Route::get('/register', function () {
-    return view('register',[
-    	"title" => "register"
-    ]);
-});
+
 
 Route::post('login/process', [authcontroller::class, 'authenticate']);
-Route::post('register/process', [authcontroller::class, 'register']);
+
 
 Route::group(['middleware'=>'auth'],function(){
     Route::get('/home', function(){
@@ -105,8 +101,10 @@ Route::group(['middleware'=>'auth'],function(){
                 Route::get('/{code}/tester/accept', [testercontroller::class, 'redirect_choice']);
                 Route::post('/{code}/repeat', [ujiancontroller::class, 'repeat']);
                 Route::get('/{code}/serahkan', [ujiancontroller::class, 'serahkan']);
+                Route::get('/{code}/{user_id}/{nilai_id}', [ujiancontroller::class, 'periksa']);
                 Route::post('/{code}/destroy', [ujiancontroller::class, 'destroy']);
                 Route::post('/{code}/umum', [ujiancontroller::class, 'umum']);
+                Route::post('/{code}/{user_id}/{nilai_id}/destroy', [ujiancontroller::class, 'nilai_destroy']);
                 Route::post('/{code}/kelas', [ujiancontroller::class, 'kelas']);
                 Route::post('/{code}/kkm', [ujiancontroller::class, 'kkm']);
                 Route::post('/{code}/status', [ujiancontroller::class, 'status']);
@@ -141,6 +139,7 @@ Route::group(['middleware'=>'auth'],function(){
     Route::group(['prefix'=>'s/admin', 'middleware'=>'level'],function(){
         Route::group(['middleware'=>'sessionExistSadmin'],function(){
             Route::get('/', [sadmincontroller::class, 'index']);
+
             Route::get('/user', [sadmincontroller::class, 'user']);
 Route::post('/user/{user_id}/{name}/edit', [sadmincontroller::class, 'edituser']);
             Route::get('/user/{user_id}/{name}', [sadmincontroller::class, 'detailuser']);
@@ -153,6 +152,8 @@ Route::post('/user/{user_id}/{name}/edit', [sadmincontroller::class, 'edituser']
 
             Route::group(['prefix' => 'ujian'], function() {
                 Route::get('/', [allujiancontroller::class, 'ujian']);
+                Route::get('{code}/{user_id}/{nilai_id}', [allujiancontroller::class, 'periksa']);
+                Route::post('{code}/{user_id}/{nilai_id}/destroy', [allujiancontroller::class, 'nilai_destroy']);
                 Route::get('/all', [allujiancontroller::class, 'allujian']);
                 Route::get('/ujianmonitoring', [sadmincontroller::class, 'ujianmonitoring']);
                 Route::get('/ujianmonitoring/all', [sadmincontroller::class, 'allujianmonitoring']);

@@ -25,11 +25,9 @@ class authcontroller extends Controller
             $id = Auth::id();
             $get = User::find($id);
             return redirect()->intended('home');
+        }else{
+            return back()->with('messege','user id dan password salah');
         }
-
-        return back()->withErrors([
-            'messege' => 'user id dan password salah',
-        ]);
     }
     public function logout(){
         AUTH::logout();

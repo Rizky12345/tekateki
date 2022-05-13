@@ -15,7 +15,7 @@ class Pilihan extends Migration
     {
         Schema::create('pilihans', function(Blueprint $table){
             $table->id();
-            $table->string("pilihan");
+            $table->string("pilihan")->nullable();
             $table->string("image")->nullable();
             $table->foreignId("soal_id") ->nullable();
             $table->timestamps();

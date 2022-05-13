@@ -17,6 +17,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Image;
+use Illuminate\Support\Str;
 
 class admincontroller extends Controller
 {
@@ -161,15 +162,28 @@ class admincontroller extends Controller
         ]);
     }
     public function edituser(Request $request, $user_id){
-        $validate = $request->validate([
-            'password' => 'required|min:6'
-        ]);
-
-        $user = User::where('user_id','=',$user_id)->update([
-            'password'=>Hash::make($request->password)
-        ]);
-        Auth::user()->update(['password'=>Hash::make($request->password)]);
-        
-        return back()->with('alert','password telah di ubah');
+        if ($request->image == null && $request->password == null) {
+      return back()->with('info','Form harus di isi')->with('color', 'is-danger');
+    }
+    $validate = $request->validate([
+      "image" => 'image|file|max:2048'
+    ]);
+    if ($request->password != null) {
+      if (Str::length($request->password) <= 5) {
+      return back()->with('info','password harus di isi minimal 6 karakrter')->with('color', 'is-danger');
+    }else{
+      Auth::user()->update(['password'=>Hash::make($request->password)]);
+    }
+    }
+    if ($request->image != null) {
+      if (Auth::user()->image != null) {
+        Storage::delete(Auth::user()->image);
+      }
+      $filename = $request->file("image")->store('image');
+      $user = User::where('id','=',Auth::user()->id)->update([
+        'image'=>$filename
+      ]);
+    }
+    return back()->with('info','Profile berhasil di ubah')->with('color','is-success');
     }
 }

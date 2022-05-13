@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 
 class acceptusercontroller extends Controller
 {
@@ -34,6 +35,7 @@ class acceptusercontroller extends Controller
     public function redirect_choice(Request $request){
          $request->session()->put('accept', Str::random(30));
         $request->session()->put('code', $request->code);
+        $request->session()->put('arr', collect([]));
         $ids = Ujian::where('code', '=', session()->get('code'))->firstOrFail();
         $request->session()->put('ujian_id', $ids->id);
         $nilai = new Nilai;
