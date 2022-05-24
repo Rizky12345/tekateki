@@ -23,7 +23,7 @@
 						Ujian Siswa <br> SD CBM Cipanengah Sukabumi</h1>
 						<br>
 						<figure class="image is-128x128" style="display: block;margin-left: auto;margin-right: auto;">
-							<img src="{{ asset('image/logo.png') }}">
+							<img src="{{ asset('image/cbm.png') }}">
 						</figure>
 						<br>
 						<p class="has-text-white is-small">Login untuk melanjutkan:</p><br>

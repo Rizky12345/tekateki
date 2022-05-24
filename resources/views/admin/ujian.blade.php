@@ -40,6 +40,7 @@
 					<tr>
 						<th>No.</th>
 						<th>Nama Ujian</th>
+						<th>Pembuat</th>
 						<th>Code</th>
 						<th>Status</th>
 						<th>Repeat</th>
@@ -68,6 +69,7 @@
 							</div>
 						</div>
 						<td>{{ $ujian->judul }}</td>
+						<td>{{ $ujian->user->name }}</td>
 						<td>{{ $ujian->code }}</td>
 						<td>{{ $ujian->status }}</td>
 						<td>{{ $ujian->repeat }}</td>
@@ -105,6 +107,7 @@
 							</div>
 						</div>
 						<td>{{ $ujian->judul }}</td>
+						<td>{{ $ujian->user->name }}</td>
 						<td>{{ $ujian->code }}</td>
 						<td>{{ $ujian->status }}</td>
 						<td>{{ $ujian->repeat }}</td>

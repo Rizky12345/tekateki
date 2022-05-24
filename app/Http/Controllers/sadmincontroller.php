@@ -73,7 +73,7 @@ class sadmincontroller extends Controller
             $arr2->push($ujian->kelase_id);
         }
         $nilai = Nilai::whereIn('ujian_id',$arr)->get();
-
+        $kelase = Kelase::all();
         $user = User::whereIn('kelase_id', $arr2)->where('level','=', "user")->get();
         $nilai_user = Nilai::where('user_id','=',Auth::user()->id)->get();
         $ujian_all = Ujian::where('user_id','=',Auth::user()->id)->get();
@@ -81,6 +81,7 @@ class sadmincontroller extends Controller
             "ujians"=>$ujians,
             "nilais"=>$nilai,
             "users"=>$user,
+            "kelases"=>$kelase,
             "user_nilai"=>$nilai_user,
             "ujian_all"=>$ujian_all,
             'title'=>['Admin','Ujian monitoring'],

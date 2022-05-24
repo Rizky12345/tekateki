@@ -80,22 +80,27 @@
 $b = 0;
 @endphp
 
-@php
-$peserta = 0;
-@endphp
-@foreach($users as $user)
-@php
-++$peserta;
-@endphp
-@endforeach
+
 
 
 
 
 @foreach($ujians as $ujian)
 @php
+$peserta = 0;
+@endphp
+@foreach($users as $user)
+@if($ujian->kelase_id == $user->kelase_id)
+@php
+++$peserta;
+@endphp
+@endif
+@endforeach
+
+@php
 $sudah = 0;
 $belum = 0;
+$collects = collect([]);
 @endphp
 
 
@@ -103,11 +108,17 @@ $belum = 0;
 @foreach($nilais as $nilai)
 @if($ujian->id == $nilai->ujian_id && $user->id == $nilai->user_id)
 @php
-++$sudah;
+$collects->push($nilai);
 @endphp
 @endif
 @endforeach
 @endforeach
+
+@php
+$sudah = $collects->unique('user_id');
+$sudah = count($sudah);
+@endphp
+
 
 @php
 $b = $b+1;

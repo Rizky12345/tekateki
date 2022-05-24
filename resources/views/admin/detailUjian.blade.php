@@ -73,7 +73,7 @@ $i = 0;
 							<div class="field-body">
 								<div class="field">
 									<p class="control">
-										<div class="select">
+										<div class="select" onclick="kkm()">
 											<select name="kkm" id="kkm" onclick="kkm()">
 												<option value="50" @if($ujian->kkm == 50) selected @endif>50</option>
 												<option value="60" @if($ujian->kkm == 60) selected @endif>60</option>
@@ -168,7 +168,7 @@ $i = 0;
 								<div class="field">
 									<p class="control pt-2">
 										<div class="select">
-				<select id="kelas" onclick="kelas()">
+				<select id="kelas" onclick="qweqwe()">
 					@foreach($kelases as $kelas)
 					@if($kelas->id == $ujian->kelase_id)
 					<option value="{{ $kelas->id }}" selected>{{ $kelas->kelas }}</option>
@@ -351,7 +351,7 @@ $i = 0;
 		});
 
 	} 
-	function kelas () {
+	function qweqwe () {
 		var value =  $('#kelas').find(":selected").text()
 
 		$.ajaxSetup({
@@ -369,7 +369,7 @@ $i = 0;
 			}
 		});
 	} 
-	function kkm () {
+	function kkm() {
 		var value =  $('#kkm').find(":selected").text()
 
 		$.ajaxSetup({
@@ -415,7 +415,7 @@ $i = 0;
 			$('#repeat').html('yes');
 		}
 	}
-	function kkm () {
+	function kkm() {
 		var value =  $('#kkm').find(":selected").text()
 
 		$.ajaxSetup({
@@ -493,9 +493,8 @@ $i = 0;
 		});
 
 	} 
-	function kelas () {
-		var value =  $('#kelas').find(":selected").text()
-
+	function qweqwe () {
+		var value =  $('#kelas').find(":selected").text();
 		$.ajaxSetup({
 			headers: {
 				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

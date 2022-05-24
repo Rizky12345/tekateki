@@ -130,22 +130,22 @@ $a = 0;
             }
             @endphp
             <div class="column has-text-centered">
-                 @can('admin')
-                <a href="{{ url('admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="title" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
-                @endcan
-                @can('sadmin')
-                 <a href="{{ url('s/admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="title" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
-                @endcan
-                <h1>Jumlah yang mengerjakan</h1>
-                <h1 class="title is-1">{{ $count }}</h1>
-            </div>
+               @can('admin')
+               <a href="{{ url('admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="title" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
+               @endcan
+               @can('sadmin')
+               <a href="{{ url('s/admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="title" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
+               @endcan
+               <h1>Jumlah yang mengerjakan</h1>
+               <h1 class="title is-1">{{ $count }}</h1>
+           </div>
 
-            @endif
+           @endif
 
-            @endforeach
+           @endforeach
 
-        </div>
-    </div>
+       </div>
+   </div>
 </div>
 @endif
 
@@ -164,14 +164,15 @@ $a = 0;
                             <th>No.</th>
                             <th>Nama</th>
                             <th>Jumlah mengikuti Ujian</th>
+                            <th>Jumlah Mengerjakan Ujian</th>
                         </tr>
                     </thead>            
                     @php
                     $count_user = 0;
-                    $count_nilai = 0;
+                    
                     @endphp
 
-                    @foreach($users as $user)
+{{--                     @foreach($users as $user)
                     @foreach($nilais as $nilai)
                     @if($nilai->user_id == $user->id)
                     @php
@@ -179,14 +180,38 @@ $a = 0;
                     @endphp
                     @endif
                     @endforeach
-                    @endforeach
+                    @endforeach --}}
                     
+
+
                     <tbody>
                         @foreach($users as $user)
+                        @php
+                        $count_nilai = collect([]);
+                        $count_nilais = 0;
+                        @endphp
                         <tr>
                             <td>{{ ++$count_user }}</td>
                             <td>{{ $user->name }}</td>
-                            <td>{{ $count_nilai }}</td>
+                            @foreach($nilais as $nilai)
+                            @if($nilai->user_id == $user->id)
+                            @php
+                            $count_nilai->push($nilai);
+                            @endphp
+                            @endif
+                            @endforeach
+                            @php
+                            $hitungan = $count_nilai->unique('user_id');
+                            @endphp
+                            <td>{{ count($hitungan) }}</td>
+                            @foreach($nilais as $nilai)
+                            @if($nilai->user_id == $user->id)
+                            @php
+                            ++$count_nilais;
+                            @endphp
+                            @endif
+                            @endforeach
+                            <td>{{ $count_nilais }}</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -246,20 +271,25 @@ $peserta = 0;
 @php
 $sudah = 0;
 $belum = 0;
+$arr = collect([]);
 @endphp
 
 
 @foreach($users as $user)
 @foreach($nilais as $nilai)
-@if($ujian->id == $nilai->ujian_id && $user->id == $nilai->user_id)
+@if($ujian->id == $nilai->ujian_id && $nilai->user_id == $user->id)
 @php
-++$sudah;
+$arr->push($nilai);
 @endphp
 @endif
 @endforeach
 @endforeach
+
+
 @php
 $b = $b+1;
+$sudah = $arr->unique('user_id');
+$sudah = count($sudah);
 $belum = $peserta - $sudah;
 $belum <= 0 ? $belum = 0 : $belum;
 @endphp

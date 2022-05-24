@@ -7,7 +7,13 @@
 	}
 	
 </style>
-
+@if($errors->first('user_id'))
+@if($errors->first('user_id') == "The user id must be an integer.")
+<div class="notification is-danger">
+	user_id Harus Berupa Bilangan Bulat
+</div>
+@endif
+@endif
 @if(session('success'))
 <div class="notification is-success">
 	{{ session('success') }}
