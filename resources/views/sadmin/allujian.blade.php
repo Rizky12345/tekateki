@@ -1,6 +1,11 @@
 @extends('../layout/head_link2')
 
 @section('body_link')
+@if(session('filter_alert'))
+<div class="notification {{ session('color') }}">
+	{{ session('filter_alert') }}
+</div>
+@endif
 @if(session('success'))
 <div class="notification is-success">
 	{{ session('success') }}
@@ -10,8 +15,36 @@
 	<a href="{{ url('s/admin/ujian/create') }}">
 		<button class="button">Buat Ujian</button>
 	</a>
+	<br><br>
+<form action="{{ url('s/admin/ujian/filter_all') }}" method="post">
+		@csrf
+		<div class="select">
+			<select name="semester" id="">
+				<option value="">--Filter Semester--</option>
+				<option value="genap">Genap</option>
+				<option value="ganjil">Ganjil</option>
+			</select>
+		</div>
+		<div class="select">
+			<select name="tahun" id="">
+				<option value="">--Filter Tahun--</option>
+				@foreach($tahuns as $tahun)
+				<option value="{{ $tahun }}">{{ $tahun }}</option>
+				@endforeach
+			</select>
+		</div>
+		<div class="select">
+			<select name="kelas" id="">
+				<option value="">--Filter Tahun--</option>
+				@foreach($kelases as $kelas)
+				<option value="{{ $kelas->id }}">{{ $kelas->kelas }}</option>
+				@endforeach
+			</select>
+		</div>
+		<button class="button is-info">Filter</button>
+	</form>
 	<br>
-	<br>
+
 
 
 	@if($ujians->isEmpty())
@@ -22,73 +55,125 @@
 	</div>
 	@else
 
-			<div class="card">
-			<div class="card-head">
-				<div class="card-header-title">
-					Daftar Ujian
-				</div>
-			</div>
-			<div class="card-content">
-				<table class="table is-fullwidth">
-			<thead>
-				<tr>
-					<th>No</th>
-					<th>Nama Ujian</th>
-					<th>Pembuat</th>
-					<th>Code</th>
-					<th>Status</th>
-					<th>Repeat</th>
-				</tr>
-			</thead>
-			<tbody>
-				@php
-					$nomer=0;
-					@endphp
-				@foreach($ujians as $ujian)
-				
-				<tr>
-					<td>{{ ++$nomer }}</td>
-					<div id="modal-js-example{{ $nomer }}" class="modal">
-						<div class="modal-background"></div>
-						<div class="modal-content">
-							<div class="box is-3 has-text-centered">
-								<p class="title">Hapus Ujian?</p>
-<form action="{{ url("s/admin/ujian/$ujian->code/destroy") }}" method="post">
-								@csrf
-								<input type="text" class="is-hidden" value="{{ $ujian->id }}" name="id">
-									<button class="button is-danger">Hapus</button>
-								</form>
-							</div>
-						</div>
-					</div>
-					<td>{{ $ujian->judul }}</td>
-					<td>{{ $ujian->user->name }}</td>
-					<td>{{ $ujian->code }}</td>
-					<td>{{ $ujian->status }}</td>
-					<td>{{ $ujian->repeat }}</td>
-					<td class="is-actions-cell">
-						<div class="buttons is-right">
-							<a href="{{ url("s/admin/ujian/$ujian->code") }}">
-								<button class="button is-small is-primary" type="button">
-									<span class="icon"><i class="mdi mdi-eye"></i></span>
-								</button>
-							</a>
-
-								<button class="button is-small is-dark jb-modal" data-target="modal-js-example{{ $nomer }}">
-									<span class="icon"><i class="mdi mdi-trash-can"></i></span>
-								</button>
-
-						</div>
-					</td>
-				</tr>
-				@endforeach
-			</tbody>
-		</table>
+	<div class="card">
+		<div class="card-head">
+			<div class="card-header-title">
+				Daftar Ujian
 			</div>
 		</div>
-		
-		
-		
+		<div class="card-content" style="overflow-x:auto;">
+			<table class="table is-fullwidth">
+				<thead>
+					<tr>
+						<th>No</th>
+						<th>Nama Ujian</th>
+						<th>Pembuat</th>
+						<th>Code</th>
+						<th>Kelas</th>
+						<th>Status</th>
+						<th>Semester</th>
+						<th>type</th>
+					</tr>
+				</thead>
+				<tbody>
+					@php
+					$nomer=0;
+					@endphp
+					@if(session('filters'))
+					@foreach(session('filters') as $ujian)
+					<tr>
+						<td>{{ ++$nomer }}</td>
+						{{-- <div id="modal-js-example{{ $nomer }}" class="modal">
+							<div class="modal-background"></div>
+							<div class="modal-content">
+								<div class="box is-3 has-text-centered">
+									<p class="title">Hapus Ujian?</p>
+									<form action="{{ url("s/admin/ujian/$ujian->code/destroy") }}" method="post">
+										@csrf
+										<input type="text" class="is-hidden" value="{{ $ujian->id }}" name="id">
+										<button class="button is-danger">Hapus</button>
+
+									</form>
+
+								</div>
+							</div>
+						</div> --}}
+						<td>{{ $ujian->judul }}</td>
+						<td>{{ $ujian->user->name }}</td>
+						<td>{{ $ujian->code }}</td>
+						<td>{{ $ujian->kelase->kelas }}</td>
+						<td>{{ $ujian->status }}</td>
+						<td>{{ $ujian->semester }}</td>
+						<td>{{ $ujian->type }}</td>
+						<td class="is-actions-cell">
+							<div class="buttons is-right">
+								<a href="{{ url("s/admin/ujian/$ujian->code") }}">
+									<button class="button is-small is-primary" type="button">
+										<span class="icon"><i class="mdi mdi-eye"></i></span>
+									</button>
+								</a>
+								{{-- <button class="button is-small is-dark js-modal-trigger" data-target="modal-js-example{{ $nomer }}">
+									<span class="icon">
+										<i class="mdi mdi-trash-can"></i>
+									</span>
+								</button> --}}
+							</div>
+						</td>
+					</tr>
+					@endforeach
+					@else
+					@foreach($ujians as $ujian)
+					<tr>
+						<td>{{ ++$nomer }}</td>
+						{{-- <div id="modal-js-example{{ $nomer }}" class="modal">
+							<div class="modal-background"></div>
+							<div class="modal-content">
+								<div class="box is-3 has-text-centered">
+									<p class="title">Hapus Ujian?</p>
+									<form action="{{ url("s/admin/ujian/$ujian->code/destroy") }}" method="post">
+										@csrf
+										<input type="text" class="is-hidden" value="{{ $ujian->id }}" name="id">
+										<button class="button is-danger">Hapus</button>
+
+									</form>
+
+								</div>
+							</div>
+						</div> --}}
+						<td>{{ $ujian->judul }}</td>
+						<td>{{ $ujian->user->name }}</td>
+						<td>{{ $ujian->code }}</td>
+						<td>{{ $ujian->kelase->kelas }}</td>
+						<td>{{ $ujian->status }}</td>
+						<td>{{ $ujian->semester }}</td>
+						<td>{{ $ujian->type }}</td>
+						<td class="is-actions-cell">
+							<div class="buttons is-right">
+								<a href="{{ url("s/admin/ujian/$ujian->code") }}">
+									<button class="button is-small is-primary" type="button">
+										<span class="icon"><i class="mdi mdi-eye"></i></span>
+									</button>
+								</a>
+								{{-- <button class="button is-small is-dark js-modal-trigger" data-target="modal-js-example{{ $nomer }}">
+									<span class="icon">
+										<i class="mdi mdi-trash-can"></i>
+									</span>
+								</button> --}}
+							</div>
+						</td>
+					</tr>
+					@endforeach
+					@endif
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	    @if(!session('filters'))
+    {{ $ujians->render() }}
+    @endif
+	<div style="height:20vh;"></div>
+
 
 	@endif
 </section>

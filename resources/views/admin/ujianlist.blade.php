@@ -1,8 +1,13 @@
 @extends('../layout/head_link2')
 
 @section('body_link')
-<div class="container">
 
+@if(session('filter_alert'))
+<div class="notification {{ session('color') }}">
+    {{ session('filter_alert') }}
+</div>
+@endif
+<div class="container">
     @php
     $a = 0;
     @endphp
@@ -15,65 +20,83 @@
         </div>
     </div>
     @else
+    @can('sadmin')
+    <form @if(Route::current()->uri() == "s/admin/ujian/ujianmonitoring") action="{{ url('s/admin/ujian/filter_monitor') }}" @elseif(Route::current()->uri() == "s/admin/ujian/ujianmonitoring/all") action="{{ url('s/admin/ujian/filter_monitor_all') }}" @endif method="post">
+        @csrf
+        <div class="select">
+            <select name="semester" id="">
+                <option value="">--Filter Semester--</option>
+                <option value="genap">Genap</option>
+                <option value="ganjil">Ganjil</option>
+            </select>
+        </div>
+        <div class="select">
+            <select name="tahun" id="">
+                <option value="">--Filter Tahun--</option>
+                @foreach($tahuns as $tahun)
+                <option value="{{ $tahun }}">{{ $tahun }}</option>
+                @endforeach
+            </select>
+        </div>
+        <button class="button is-info">Filter</button>
+    </form>
+    @endcan
+    
+    
+    <br><br>
     <div class="card">
         <div class="card-head">
             <strong class="card-header-title">Ujian monitoring</strong>
         </div>
         <div class="card-content">
             <div class="columns is-multiline is-12">
-                @foreach($ujians as $ujian)
-            @php
-            $a = $a+1;
-            @endphp
-            @if($ujian->repeat == "no")
-            <div class="column is-4 has-text-centered">
-                @can('sadmin')
-                <a href="{{ url('s/admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="subtitle" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
-                @endcan
-                @can('admin')
-                <a href="{{ url('admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="subtitle" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
-                @endcan
-                <div id="divcanvas{{ $a }}" >
-                    <canvas id="myChart{{ $a }}"></canvas>
+
+                @if(session('filters'))
+                @foreach(session('filters') as $ujian)
+                @php
+                $a = $a+1;
+                @endphp
+                
+                <div class="column is-4 has-text-centered">
+                    @can('sadmin')
+                    <a href="{{ url('s/admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="subtitle" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
+                    @endcan
+                    @can('admin')
+                    <a href="{{ url('admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="subtitle" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
+                    @endcan
+                    <div id="divcanvas{{ $a }}" >
+                        <canvas id="myChart{{ $a }}"></canvas>
+                    </div>
                 </div>
-            </div>
-            @else
-
-            @php
-            $count = 0;
-            foreach($nilais as $nilai){
-                if ($nilai->ujian_id == $ujian->id) {
-                    ++$count;
-                } 
-            }
-            @endphp
-            <div class="column is-4 has-text-centered">
-
-               @can('admin')
-                <a href="{{ url('admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="title" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
-                @endcan
-                @can('sadmin')
-                 <a href="{{ url('s/admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="title" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
-                @endcan
-                <h1>Jumlah yang mengerjakan</h1>
-                            <br>
-            <br>
-            <br>
-                <h1 class="title is-1">{{ $count }}</h1>
-                            <br>
-            <br>
-            <br>
-            </div>
-
-            @endif
-
-            @endforeach
+                @endforeach
+                @else
+                @foreach($ujians as $ujian)
+                @php
+                $a = $a+1;
+                @endphp
+                
+                <div class="column is-4 has-text-centered">
+                    @can('sadmin')
+                    <a href="{{ url('s/admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="subtitle" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
+                    @endcan
+                    @can('admin')
+                    <a href="{{ url('admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="subtitle" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
+                    @endcan
+                    <div id="divcanvas{{ $a }}" >
+                        <canvas id="myChart{{ $a }}"></canvas>
+                    </div>
+                </div>
+                @endforeach
+                @endif
             </div>
         </div>
     </div>
     @endif
+    @if(!session('filters'))
+    {{ $ujians->render() }}
+    @endif
 
-    <br><br><br><br>
+    <div style="height:20vh;"></div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 @php
@@ -113,10 +136,10 @@ $collects->push($nilai);
 @endif
 @endforeach
 @endforeach
-
 @php
 $sudah = $collects->unique('user_id');
 $sudah = count($sudah);
+
 @endphp
 
 

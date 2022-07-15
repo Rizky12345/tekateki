@@ -27,7 +27,7 @@
 		if (date("Y-m-d H:i:s", strtotime($ujian->time->date_time)) > date("Y-m-d H:i:s", strtotime($time))) {
 			$status = "Ujian Belum dimulai";
 		}elseif(date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($ujian->time->date_time))) <= date("Y-m-d H:i:s", strtotime($time))){
-			$status = "Ujian Belakhir";
+			$status = "Ujian Berakhir";
 		}elseif (date("Y-m-d H:i:s", strtotime($ujian->time->date_time)) <= date("Y-m-d H:i:s", strtotime($time))) {
 			$status = "Ujian di mulai";
 		}
@@ -41,82 +41,57 @@
 		@endphp
 	</p>
 	@endif
-	<p>Repeat: {{ $ujian->repeat }}</p>
 	<p>Keterangan: untuk mahasiswa informatika UMMI</p>
 	<br><br>
 	<strong>Dengan klik tombol ini anda menyetujui untuk mengerjakan ujian ini <br>	hingga selesai</strong><br><br>
-	{{-- @php
+	
+	@if($ujian->time->date_time != NULL)
+	{{-- @if($ujian->repeat == 'no') --}}
 
-	@endphp
-	@if($ujian->repeat == "no")
 	@if($nilai->isEmpty())
-	@if($ujian->time->date_time != NULL)
-	@if($status == "Ujian Belum dimulai" || $status ==  "Ujian Belakhir")
+	@if($status == "Ujian Belum dimulai" || $status ==  "Ujian Berakhir")
 	<button class="button is-dark" disabled>Accept</button>
 	@else
+	@can('admin')
 	<a href="{{ url("admin/ujian/$ujian->code/tester/accept") }}" >
 		<button class="button is-dark">Accept</button>
 	</a>
-	@endif
-	@else
-	<a href="{{ url("admin/ujian/$ujian->code/tester/accept") }}" >
+	@endcan
+	@can('sadmin')
+	<a href="{{ url("s/admin/ujian/$ujian->code/tester/accept/process") }}" >
 		<button class="button is-dark">Accept</button>
 	</a>
+	@endcan
 	@endif
 	@else
 	<button class="button is-dark" disabled>Accept</button>
 	<p class="has-text-danger">Kamu sudah menyelesaikan Ujian ini</p>
 	@endif
+	
+	{{-- @else
+	@if($status == "Ujian Belum dimulai" || $status ==  "Ujian Berakhir")
+	<button class="button is-dark" disabled>Accept</button>
 	@else
+	@can('admin')
 	<a href="{{ url("admin/ujian/$ujian->code/tester/accept") }}" >
 		<button class="button is-dark">Accept</button>
 	</a>
+	@endcan
+	@can('sadmin')
+	<a href="{{ url("s/admin/ujian/$ujian->code/tester/accept/process") }}" >
+		<button class="button is-dark">Accept</button>
+	</a>
+	@endcan
+	@endif
 	@endif --}}
-	@if($ujian->time->date_time != NULL)
-	@if($ujian->repeat == 'no')
-	@if($nilai->isEmpty())
-	@if($status == "Ujian Belum dimulai" || $status ==  "Ujian Belakhir")
-	<button class="button is-dark" disabled>Accept</button>
 	@else
 	@can('admin')
-	<a href="{{ url("admin/ujian/$ujian->code/tester/accept") }}" >
+	<a href="{{ url("admin/ujian/$ujian->code/tester/accept/") }}" >
 		<button class="button is-dark">Accept</button>
 	</a>
 	@endcan
 	@can('sadmin')
-		<a href="{{ url("s/admin/ujian/$ujian->code/tester/accept") }}" >
-		<button class="button is-dark">Accept</button>
-	</a>
-	@endcan
-	@endif
-	@else
-	<button class="button is-dark" disabled>Accept</button>
-	<p class="has-text-danger">Kamu sudah menyelesaikan Ujian ini</p>
-	@endif
-	@else
-	@if($status == "Ujian Belum dimulai" || $status ==  "Ujian Belakhir")
-	<button class="button is-dark" disabled>Accept</button>
-	@else
-	@can('admin')
-	<a href="{{ url("admin/ujian/$ujian->code/tester/accept") }}" >
-		<button class="button is-dark">Accept</button>
-	</a>
-	@endcan
-	@can('sadmin')
-		<a href="{{ url("s/admin/ujian/$ujian->code/tester/accept") }}" >
-		<button class="button is-dark">Accept</button>
-	</a>
-	@endcan
-	@endif
-	@endif
-	@else
-	@can('admin')
-	<a href="{{ url("admin/ujian/$ujian->code/tester/accept") }}" >
-		<button class="button is-dark">Accept</button>
-	</a>
-	@endcan
-	@can('sadmin')
-		<a href="{{ url("s/admin/ujian/$ujian->code/tester/accept") }}" >
+	<a href="{{ url("s/admin/ujian/$ujian->code/tester/accept/process") }}" >
 		<button class="button is-dark">Accept</button>
 	</a>
 	@endcan

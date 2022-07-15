@@ -17,7 +17,7 @@
 	<nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
     <a class="navbar-item" href="{{ url('user') }}">
-      <h1 class="title">Hujan</h1>
+      <h1 class="title"><img src="{{ asset('image/cbm.png') }}" alt=""></h1>
     </a>
 
     <a role="button" class="navbar-burger" aria-label="menu" @click="showNav = !showNav" :class="{ 'is-active': showNav }">

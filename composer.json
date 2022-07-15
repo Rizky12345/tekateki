@@ -11,7 +11,9 @@
         "intervention/image": "^2.7",
         "laravel/framework": "^8.65",
         "laravel/sanctum": "^2.11",
-        "laravel/tinker": "^2.5"
+        "laravel/tinker": "^2.5",
+        "maatwebsite/excel": "^3.1",
+        "phpoffice/phpword": "^0.18.3"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.6",

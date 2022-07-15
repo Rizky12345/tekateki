@@ -52,7 +52,7 @@
 						<div class="field-body">
 							<div class="field">
 								<div class="control">
-									<input class="input" type="text" placeholder="Normal sized input" name="name" autocomplete="off">
+									<input class="input" type="text" placeholder="Masukkan Nama" name="name" autocomplete="off" value="{{ old('name') }}">
 								</div>
 							</div>
 						</div>
@@ -68,7 +68,7 @@
 						<div class="field-body">
 							<div class="field">
 								<div class="control">
-									<input class="input" type="text" placeholder="Normal sized input" name="password" autocomplete="off">
+									<input class="input" type="text" placeholder="Masukkan password" name="sandi" autocomplete="off" value="{{ old('sandi') }}">
 								</div>
 							</div>
 						</div>
@@ -85,8 +85,8 @@
 						<div class="field-body">
 							<div class="field">
 								<div class="control">
-									<input class="input" type="text" placeholder="Normal sized input" name="user_id" autocomplete="off">
-									<small class="is-small"><strong>harus di isi dengan angka</strong></small>
+									<input class="input" type="text" placeholder="Masukkan Nama user_id" name="user_id" autocomplete="off" value="{{ old('user_id') }}">
+									<small class="is-small"><strong>harus di isi dengan bilangan bulat</strong></small>
 								</div>
 							</div>
 						</div>
@@ -104,7 +104,7 @@
 										<select name="kelas" id="">
 											<option value="">Pilih Kelas</option>
 											@foreach($kelases as $kelase)
-											<option value="{{ $kelase->id }}">{{ $kelase->kelas }}</option>
+											<option value="{{ $kelase->id }}" {{ old('kelas') == $kelase->id ? "selected" : ''}}>{{ $kelase->kelas }}</option>
 											@endforeach
 										</select>
 									</div>
@@ -124,9 +124,9 @@
 								<div class="control">
 									<div class="select">
 										<select name="level" id="">
-											<option value="user">User</option>
-											<option value="admin">Admin</option>
-											<option value="super admin">Super Admin</option>
+											<option value="user" {{ old('level') == "user" ? "selected" : ''}}>Murid</option>
+											<option value="admin" {{ old('level') == "admin" ? "selected" : ''}}>Guru</option>
+											<option value="super admin" {{ old('level') == "super admin" ? "selected" : ''}}>Administrator</option>
 										</select>
 									</div>
 								</div>
@@ -291,7 +291,7 @@
 					<td>{{ $user->name }}</td>
 					<td>{{ $user->user_id }}</td>
 					<td>{{ $user->kelase->kelas }}</td>
-					<td>{{ $user->level }}</td>
+					<td>@if($user->level == 'user') Murid @elseif($user->level == 'admin') Guru @elseif($user->level == 'super admin') Administrator @endif</td>
 					<td class="is-actions-cell">
 						<div class="buttons is-right">
 							<a href="{{ url("s/admin/user/$user->user_id/$user->name") }}">

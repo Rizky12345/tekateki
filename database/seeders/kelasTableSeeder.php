@@ -62,5 +62,9 @@ class kelasTableSeeder extends Seeder
         'id'=> 511,
         'kelas' => "6b"
     ]);
+          DB::table('kelases')->insert([
+        'id'=> 512,
+        'kelas' => "LULUS"
+    ]);
  }
 }

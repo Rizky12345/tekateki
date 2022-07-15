@@ -14,14 +14,14 @@ class timeTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('times')->insert([
-            'id' => 500,
-            'date_time' => "2022-01-13 14:01:58",
-            'time' => 90
-        ]);
-        DB::table('times')->insert([
-            'id' => 400,
-            'time' => 90
-        ]);
+        // DB::table('times')->insert([
+        //     'id' => 500,
+        //     'date_time' => "2022-01-13 14:01:58",
+        //     'time' => 90
+        // ]);
+        // DB::table('times')->insert([
+        //     'id' => 400,
+        //     'time' => 90
+        // ]);
     }
 }

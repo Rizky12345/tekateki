@@ -65,6 +65,10 @@
 							</div>
 							<div class="column is-5-mobile">
 								{{ $list->mapel->mapel }}
+								
+							</div>
+							<div class="column is-3">
+								{{ $list->type }}
 							</div>
 							
 						</div>
@@ -95,6 +99,9 @@
 							</div>
 							<div class="column is-5-mobile">
 								{{ $list->mapel->mapel }}
+							</div>
+							<div class="column is-3">
+								{{ $list->type }}
 							</div>
 						</div>
 					</div>			

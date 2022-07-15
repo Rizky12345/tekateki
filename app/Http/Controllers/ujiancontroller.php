@@ -23,28 +23,49 @@ use Image;
 class ujiancontroller extends Controller
 {
     public function ujian(){
-        $ujian = Ujian::where("user_id","=", Auth::user()->id)->get();
+        $ujian = Ujian::where("user_id","=", Auth::user()->id)->orderBy('id', 'desc')->simplePaginate(20);
+        $time = Carbon::now();
+        $y = date('Y', strtotime($time));
+        $collect = collect([]);
+        for ($i=2022; $i <= $y; $i++) { 
+            $collect->push($i);
+        }
         return view('admin/ujian',[
-            'title' => ['Admin','Ujian'],
-            'ujians'=>$ujian
+            'title' => ['guru','Ujian'],
+            'ujians'=>$ujian,
+            'tahuns'=>$collect
         ]);
     }
     public function detail($code){
         $ujian = Ujian::where('code', '=', $code)->firstOrFail();
         $soals = Soal::where('ujian_id','=', $ujian->id)->get();
         $kelase = Kelase::get();
+
+        $mapels = Mapel::all();
+
+        
         $arr = collect([]);
         foreach($soals as $soal){
             $arr->push($soal->id);
         }
         $pilihans = Pilihan::whereIn('soal_id', $arr)->get();    
+$kuncis = Kjawaban::whereIn('soal_id',$arr)->get();
+$collect = collect([]);
+foreach($kuncis as $kunci){
+    $collect->push($kunci->pilihan_id);
+}
+// dd($collect);
+// dd($kuncis);
         return view('admin/detailUjian',[
             'ujian' => $ujian,
-            'title'=> ['Admin','Ujian','Detail'],
+            'title'=> ['guru','Ujian','Detail'],
             'soals'=> $soals,
             'kelases'=> $kelase,
-            'pilihans' => $pilihans
+            'mapels'=> $mapels,
+            'pilihans' => $pilihans,
+            'kuncis' => $collect,
         ]);
+
     }
     public function editsoal($code){
         $ujian = Ujian::where('code', '=', $code)->firstOrFail();
@@ -57,7 +78,7 @@ class ujiancontroller extends Controller
         $pilihans = Pilihan::whereIn('soal_id', $arr)->get();    
         return view('admin/editsoal',[
             'ujian' => $ujian,
-            'title'=> ['Admin','Ujian','Detail','Edit'],
+            'title'=> ['guru','Ujian','Detail','Edit'],
             'soals'=> $soals,
             'pilihans' => $pilihans,
             'kuncis'=>$kuncis
@@ -399,8 +420,57 @@ class ujiancontroller extends Controller
     }
     public function timeujian(Request $request, $code){
         $validate = $request->validate([
-            'timeupdate' => 'required'
+            'timeupdate' => 'required',
+            'judul' => 'required',
+            'type'=> 'required',
+            'mapel'=> 'required',
+            'semester'=> 'required',
+            'tahun_ajaran'=> 'required'
+
         ]);
+        $ujian_id = Ujian::where('code','=',$code)->first();
+        if (strlen($request->tahun_ajaran) == 9) {
+            $tahun1 = $request->tahun_ajaran[0].$request->tahun_ajaran[1].$request->tahun_ajaran[2].$request->tahun_ajaran[3];
+
+            $tahun2 = $request->tahun_ajaran[5].$request->tahun_ajaran[6].$request->tahun_ajaran[7].$request->tahun_ajaran[8];
+
+            if (strlen((int)$tahun1) != 4) {
+                return redirect('admin/ujian/'.$ujian_id->code)->with('gagal', 'tahun ajaran tidak valid, contoh "2022/2023" tanpa tanda petik');
+            }
+            $satu = (int)$tahun1+1;
+            if (strlen((int)$tahun2) != 4 || (int)$tahun2 != $satu) {
+                return redirect('admin/ujian/'.$ujian_id->code)->with('gagal', 'tahun ajaran tidak valid, contoh "2022/2023" tanpa tanda petik');
+            }
+
+        }else{
+            return redirect('admin/ujian/'.$ujian_id->code)->with('gagal', 'tahun ajaran tidak valid, contoh "2022/2023" tanpa tanda petik');
+        }
+        if($request->tahun_ajaran){
+            $ujian_mapel = Ujian::where('code','=',$code)->update([
+                'tahun_ajaran'=>$request->tahun_ajaran
+            ]);
+        }
+        if($request->mapel){
+            $ujian_mapel = Ujian::where('code','=',$code)->update([
+                'mapel_id'=>$request->mapel
+            ]);
+        }
+        if($request->semester){
+            $ujian_semester = Ujian::where('code','=',$code)->update([
+                'semester'=>$request->semester
+            ]);
+        }
+        if($request->type){
+            $ujian_type = Ujian::where('code','=',$code)->update([
+                'type'=>$request->type
+            ]);
+        }
+        
+        if($ujian_id->judul != $request->judul){
+            $ujian_update = Ujian::where('code','=',$code)->update([
+                'judul'=>$request->judul
+            ]);
+        }
         if ($request->timeujian != NULL) {
             $date = date('Y-m-d', strtotime($request->timeujian));
             $time = date('H:i:s', strtotime($request->timeujian));
@@ -421,23 +491,27 @@ class ujiancontroller extends Controller
         }
     }
     public function create(){
+        $time = Carbon::now('Asia/Jakarta');
+        $mont = date('m', strtotime($time));
         $mapel = Mapel::get();
         $kelase = Kelase::get();
         return view('admin/create',[
-            'title'=>['Admin','Ujian','Detail','Buat ujian'],
+            'title'=>['guru','Ujian','Detail','Buat ujian'],
             'mapels'=>$mapel,
+            'mont'=>$mont,
             'kelases'=>$kelase,
         ]);
     }
     public function createprocess(Request $request){
         $validate = $request->validate([
             'judul'=>'required',
-            'repeat'=>'required',
+            'type'=>'required',
             'status'=>'required',
             'mapel'=>'required',
-            'time'=>'required|integer',
+            'tahun_ajaran'=>'required',
+            'time'=>'required',
             'soal'=>'required|integer',
-            'pilihan'=>'integer'
+            'semester'=>'required',
         ]);
         $time = Carbon::now('Asia/Jakarta');
         $year = date('Y', strtotime($time));
@@ -448,12 +522,39 @@ class ujiancontroller extends Controller
         $random3 = Str::random(1);
         $random4= Str::random(1);
 
+        // $tahun1 = "";
+        // $tahun2 = "";
+        // $tahun1 = $tahun1+$request->tahun_ajaran[0];
+        // dd();
+        if (strlen($request->tahun_ajaran) == 9) {
+            $tahun1 = $request->tahun_ajaran[0].$request->tahun_ajaran[1].$request->tahun_ajaran[2].$request->tahun_ajaran[3];
+
+            $tahun2 = $request->tahun_ajaran[5].$request->tahun_ajaran[6].$request->tahun_ajaran[7].$request->tahun_ajaran[8];
+
+            if (strlen((int)$tahun1) != 4) {
+                return redirect('admin/ujian/create')->with('gagal', 'tahun ajaran harus di isi contoh "2022/2023" tanpa tanda petik')->with('validate', $request->all());
+            }
+            if ($request->tahun_ajaran[4] != "/") {
+                return redirect('admin/ujian/create')->with('gagal', 'tahun ajaran harus di isi contoh "2022/2023" tanpa tanda petik')->with('validate', $request->all());
+            }
+            $satu = (int)$tahun1+1;
+            if (strlen((int)$tahun2) != 4 || (int)$tahun2 != $satu) {
+                return redirect('admin/ujian/'.$ujian_id->code)->with('gagal', 'tahun ajaran tidak valid, contoh "2022/2023" tanpa tanda petik')->with('validate', $request->all());
+            }
+
+        }else{
+            return redirect('admin/ujian/create')->with('gagal', 'tahun ajaran harus di isi contoh "2022/2023" tanpa tanda petik')->with('validate', $request->all());
+        }
+        // dd();
+
         $code = "$day[1]$random$day[0]$random2$mont$random3$year[2]$year[3]$random4";
 
 
         $date = date('Y-m-d', strtotime($request->ujiandatetime));
         $time = date('H:i:s', strtotime($request->ujiandatetime));
         $split_time = date('Y-m-d H:i:s', strtotime("$date $time"));
+
+        $semester = $mont <= 06 ? "genap" : ($mont > 06 ? "ganjil" : 'genap');
 
         $time = new Time;
         $time->date_time = $split_time;
@@ -465,9 +566,10 @@ class ujiancontroller extends Controller
         $ujian->keterangan = $request->keterangan;
         $ujian->kelase_id = Auth::user()->kelase_id;
         $ujian->user_id = Auth::user()->id;
-        $ujian->repeat = $request->repeat;
+        $ujian->type = $request->type;
         $ujian->kkm = $request->kkm;
-        $ujian->umum = $request->umum;
+        $ujian->semester = $request->semester;
+        $ujian->tahun_ajaran = $request->tahun_ajaran;
         $ujian->code = $code;
         $ujian->time_id = $time->id;
         $ujian->mapel_id = $request->mapel;
@@ -482,7 +584,7 @@ class ujiancontroller extends Controller
                 $soal->ujian_id = $ujian->id;
                 $soal->save();
 
-                for ($b=0; $b < $request->pilihan; $b++) { 
+                for ($b=0; $b < 2; $b++) { 
                     $pilihan = new Pilihan;
                     $pilihan->pilihan = "";
                     $pilihan->soal_id = $soal->id;
@@ -491,20 +593,6 @@ class ujiancontroller extends Controller
             }
         }
         return redirect('admin/ujian/'.$ujian->code.'/edit')->with('berhasil', 'ujian berhasil ditambahkan');
-    }
-    public function repeat($code){
-        $ujian = Ujian::where('code','=',$code)->first();
-        if($ujian->repeat == 'no'){
-            $ujian = Ujian::where('code','=',$code)->update([
-                'repeat'=>"yes"
-            ]);
-        }
-        elseif($ujian->repeat == 'yes'){
-            $ujian = Ujian::where('code','=',$code)->update([
-                'repeat'=>"no"
-            ]);
-        }
-        return $ujian;
     }
     public function judul(Request $request, $code){
         $ujian = Ujian::where('code','=',$code)->update([
@@ -533,20 +621,6 @@ class ujiancontroller extends Controller
         ]);
         return $ujian;
     }
-    public function umum($code){
-        $ujian = Ujian::where('code','=',$code)->first();
-        if($ujian->umum == 'no'){
-            $ujian = Ujian::where('code','=',$code)->update([
-                'umum'=>"yes"
-            ]);
-        }
-        elseif($ujian->umum == 'yes'){
-            $ujian = Ujian::where('code','=',$code)->update([
-                'umum'=>"no"
-            ]);
-        }
-        return $ujian;
-    }
     public function destroy(Request $request){
         $ujian = Ujian::where('id','=',$request->id)->first();
         $soals = Soal::where('ujian_id','=',$ujian->id)->get();
@@ -565,7 +639,7 @@ class ujiancontroller extends Controller
         $ujian = Ujian::where('code','=',$code)->update([
             'serahkan'=>'yes'
         ]);
-        return redirect('s/admin/ujian/ujianmonitoring/'.$code)->with('success', 'Nilai ujian diserahkan');
+        return redirect('admin/ujian/ujianmonitoring/'.$code)->with('success', 'Nilai ujian diserahkan');
     }
     public function periksa($code, $user_id, $nilai_id){
         $nilai = Nilai::where('id','=',$nilai_id)->first();
@@ -586,7 +660,7 @@ class ujiancontroller extends Controller
         $jawabans = Jawaban::where('nilai_id','=',$nilai_id)->get();
         $kjawabans = Kjawaban::whereIn('soal_id', $collect)->get();
         return view('admin/jawaban',[
-            'title'=>['admin',"monitoring ujian $ujian->judul","Periksa Jawaban $user->name"],
+            'title'=>['guru',"monitoring ujian $ujian->judul","Periksa Jawaban $user->name"],
             'soals'=>$soals,
             'pilihans'=>$pilihans,
             'jawabans'=>$jawabans,
@@ -601,5 +675,31 @@ class ujiancontroller extends Controller
         }
         $nilai = Nilai::where('id','=',$request->nilai_id)->delete();
         return redirect('admin/ujian/ujianmonitoring/'.$code)->with('sukses', "Data di Hapus");;
+    }
+    public function docs_soal($code){
+        $abcd = ['A','B','C','D'];
+
+        // dd($abcd[1]); 
+        $nomer_soal = 1;
+        $ujian = Ujian::where('code','=',$code)->firstOrFail();
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $section = $phpWord->addSection();
+        $soals = Soal::where('ujian_id','=', $ujian->id)->get();
+        foreach($soals as $soal){
+            $text = $section->addText($nomer_soal.". ".$soal->soal);
+            if ($soal->type == 'pilihan') {
+                $pilihans = Pilihan::where('soal_id','=',$soal->id)->get();
+                $nomer = 0;
+                foreach($pilihans as $pilihan){
+                    $text = $section->addText($abcd[$nomer].". ".$pilihan->pilihan);
+                    $nomer++;
+                }
+            }
+            $nomer_soal++;
+            $text = $section->addText();
+        }
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $objWriter->save($ujian->judul.".docx");
+        return response()->download(public_path($ujian->judul.".docx"));
     }
 }

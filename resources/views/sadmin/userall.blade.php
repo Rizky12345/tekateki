@@ -51,9 +51,9 @@
 				<div class="control is-hidden" id="level">
 					<div class="select">
 						<select name="level" id="">
-							<option value="user">User</option>
-							<option value="admin">Admin</option>
-							<option value="super admin">Super admin</option>
+							<option value="user">Murid</option>
+							<option value="admin">Guru</option>
+							<option value="super admin">Administrator</option>
 						</select>
 					</div>
 				</div>
@@ -140,7 +140,7 @@
 								<td>{{ $user->name }}</td>
 								<td>{{ $user->user_id }}</td>
 								<td>{{ $user->kelase->kelas }}</td>
-								<td>{{ $user->level }}</td>
+								<td>@if($user->level == 'user') Murid @elseif($user->level == 'admin') Guru @elseif($user->level == 'super admin') Administrator @endif</td>
 								<td class="is-actions-cell">
 									<div class="buttons is-right">
 										<a href="{{ url("s/admin/user/$user->user_id/$user->name") }}">
@@ -195,7 +195,7 @@
 							<td>{{ $user->name }}</td>
 							<td>{{ $user->user_id }}</td>
 							<td>{{ $user->kelase->kelas }}</td>
-							<td>{{ $user->level }}</td>
+							<td>@if($user->level == 'user') Murid @elseif($user->level == 'admin') Guru @elseif($user->level == 'super admin') Administrator @endif</td>
 							<td class="is-actions-cell">
 								<div class="buttons is-right">
 									<a href="{{ url("s/admin/user/$user->user_id/$user->name") }}">
@@ -247,7 +247,7 @@
 							<td>{{ $pengguna->name }}</td>
 							<td>{{ $pengguna->user_id }}</td>
 							<td>{{ $pengguna->kelase->kelas }}</td>
-							<td>{{ $pengguna->level }}</td>
+							<td>@if($pengguna->level == 'user') Murid @elseif($pengguna->level == 'admin') Guru @elseif($pengguna->level == 'super admin') Administrator @endif</td>
 							<td class="is-actions-cell">
 								<div class="buttons is-right">
 									<a href="{{ url("s/admin/user/$pengguna->user_id/$pengguna->name") }}">
@@ -302,7 +302,7 @@
 							<td>{{ $user->name }}</td>
 							<td>{{ $user->user_id }}</td>
 							<td>{{ $user->kelase->kelas }}</td>
-							<td>{{ $user->level }}</td>
+							<td>@if($user->level == 'user') Murid @elseif($user->level == 'admin') Guru @elseif($user->level == 'super admin') Administrator @endif</td>
 							<td class="is-actions-cell">
 								<div class="buttons is-right">
 									<a href="{{ url("s/admin/user/$user->user_id/$user->name") }}">

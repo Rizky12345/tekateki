@@ -20,15 +20,26 @@ class usersTableSeeder extends Seeder
             'name' => "rizky",
             'kelase_id' => 510,
             'user_id' => 1930511035,
-            'password' => Hash::make('another0015'),
-            'level' => "admin"
+            'password' => Hash::make('qweqwe'),
+            'image' => NULL,
+            'level' => "super admin"
         ]);
         DB::table('users')->insert([
             'id'=>501,
             'name' => "qiqi",
             'kelase_id' => 510,
             'user_id' => 1930511036,
-            'password' => Hash::make('another0015'),
+            'password' => Hash::make('qweqwe'),
+            'image' => NULL,
+            'level' => "admin"
+        ]);
+        DB::table('users')->insert([
+            'id'=>502,
+            'name' => "waaw",
+            'kelase_id' => 510,
+            'user_id' => 1930511037,
+            'password' => Hash::make('qweqwe'),
+            'image' => NULL,
             'level' => "user"
         ]);
     }

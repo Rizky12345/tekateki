@@ -19,7 +19,7 @@ class sessionExistSadmin
     {
         if (Auth::user()->level == "super admin") {
             if($request->session()->get("accept") && $request->session()->get("code")){
-                return redirect("s/admin/ujian/".session()->get('code')."/tester/".session()->get('accept'));
+                return redirect("s/admin/ujian/".session()->get('code')."/tester/".session()->get('accept')."/tester");
             }
             return $next($request);
         }

@@ -18,7 +18,7 @@ use Illuminate\Support\Collection;
 class acceptusercontroller extends Controller
 {
     public function index(Request $request){
-        $a = Ujian::where('code', '=', $request->code)->first();
+        $a = Ujian::where('code', '=', $request->code)->firstOrFail();
         if($a->status == 'lock'){
             return back()->with('alert', 'Ujian di kunci');
         }

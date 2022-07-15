@@ -15,6 +15,7 @@ use App\Models\Nilai;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use App\Models\Jawaban;
 
 class testersadmincontroller extends Controller
 {
@@ -33,7 +34,8 @@ class testersadmincontroller extends Controller
     public function redirect_choice(Request $request, $code){
         $request->session()->put('accept', Str::random(30));
         $request->session()->put('code', $request->code);
-        $ids = Ujian::where('code', '=', session()->get('code'))->firstOrFail();
+        $request->session()->put('arr', collect([]));
+        $ids = Ujian::where('code', '=', session()->get('code'))->first();
         $request->session()->put('ujian_id', $ids->id);
         $nilai = new Nilai;
         $nilai->user_id = Auth::user()->id;
@@ -45,10 +47,10 @@ class testersadmincontroller extends Controller
         // $a = Ujian::where('code', '=', $request->code)->firstOrFail();
 
         // $soal = Soal::where('ujian_id', '=', $a->id)->firstOrFail();
-        return redirect("admin/ujian/$code/tester/".$request->session()->get('accept'));
+        return redirect("s/admin/ujian/$code/tester/".$request->session()->get('accept')."tester");
     }
     public function choice(Request $request){
-        $ujian_id = Ujian::where('code', '=', session()->get('code'))->firstOrFail();
+        $ujian_id = Ujian::where('code', '=', session()->get('code'))->first();
         $soals = Soal::where('ujian_id', '=', $ujian_id->id)->paginate(1);
         $soalss = Soal::where('ujian_id', '=', $ujian_id->id)->get();
         $nilai_id = Nilai::where('id', '=', session()->get('nilai'))->firstOrFail();

@@ -9,7 +9,7 @@
 	<div class="hero-body is-all-centered columns">
 		<div class="column is-5 has-background-black p-6 has-text-light shadow is-hidden-mobile">
 			<strong class="title has-text-light">login</strong>
-			<p class="">Masukkan user id dan password untuk melanjutkan. Login ini bisa digunakan murid, guru dan staff TU</p>
+			<p class="">Masukkan user id dan password untuk melanjutkan. Login ini bisa digunakan murid, guru dan Administrator</p>
 		</div>
 		<div class="column is-4 p-5 border-dark shadow has-text-centered">
 			<h1 class="is-hidden-desktop" style="font-size: revert;">Login</h1>

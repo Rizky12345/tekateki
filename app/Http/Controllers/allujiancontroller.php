@@ -23,28 +23,50 @@ use Image;
 class allujiancontroller extends Controller
 {
     public function ujian(){
-        $ujian = Ujian::where("user_id","=", Auth::user()->id)->orderBy('id', 'desc')->get();
+        $ujian = Ujian::where("user_id","=", Auth::user()->id)->orderBy('id', 'desc')->simplePaginate(20);
+        $time = Carbon::now();
+        $y = date('Y', strtotime($time));
+        $collect = collect([]);
+        for ($i=2022; $i <= $y; $i++) { 
+            $collect->push($i);
+        }
         return view('admin/ujian',[
-            'title' => ['Super admin','Ujian'],
-            'ujians'=>$ujian
+            'title' => ['Administrator','Ujian'],
+            'ujians'=>$ujian,
+            'tahuns'=>$collect
         ]);
     }
     public function detail($code){
         $ujian = Ujian::where('code', '=', $code)->firstOrFail();
         $soals = Soal::where('ujian_id','=', $ujian->id)->get();
-        $kelase = Kelase::get();
+        $kelases = Kelase::get();
+        $collect = collect([]);
+        
+        foreach ($kelases as $kelas) {
+            if ($kelas->kelas != "LULUS") {
+                $collect->push($kelas);
+            }
+        }
+        
+        $mapels = Mapel::all();
+
         $arr = collect([]);
         foreach($soals as $soal){
             $arr->push($soal->id);
         }
-        $pilihans = Pilihan::whereIn('soal_id', $arr)->get();    
+        $pilihans = Pilihan::whereIn('soal_id', $arr)->get();
+        $kuncis = Kjawaban::whereIn('soal_id',$arr)->get();
         return view('admin/detailUjian',[
             'ujian' => $ujian,
-            'title'=> ['Super admin','Ujian','Detail'],
+            'title'=> ['Administrator','Ujian','Detail'],
             'soals'=> $soals,
-            'kelases'=> $kelase,
-            'pilihans' => $pilihans
+            'kelases'=> $collect,
+            'mapels'=> $mapels,
+            'pilihans' => $pilihans,
+            'kuncis' => $kuncis,
         ]);
+        
+        
     }
     public function editsoal($code){
         $ujian = Ujian::where('code', '=', $code)->firstOrFail();
@@ -57,7 +79,7 @@ class allujiancontroller extends Controller
         $pilihans = Pilihan::whereIn('soal_id', $arr)->get();    
         return view('admin/editsoal',[
             'ujian' => $ujian,
-            'title'=> ['Super admin','Ujian','Detail','Edit'],
+            'title'=> ['Administrator','Ujian','Detail','Edit'],
             'soals'=> $soals,
             'pilihans' => $pilihans,
             'kuncis'=>$kuncis
@@ -398,15 +420,60 @@ class allujiancontroller extends Controller
         }
     }
     public function timeujian(Request $request, $code){
+
         $validate = $request->validate([
-            'timeupdate' => 'required'
+            'timeupdate' => 'required',
+            'judul' => 'required',
+            'type'=> 'required',
+            'mapel'=> 'required',
+            'semester'=> 'required',
+            'tahun_ajaran'=> 'required'
         ]);
+        $ujian_id = Ujian::where('code','=',$code)->first();
+        if (strlen($request->tahun_ajaran) == 9) {
+            $tahun1 = $request->tahun_ajaran[0].$request->tahun_ajaran[1].$request->tahun_ajaran[2].$request->tahun_ajaran[3];
+
+            $tahun2 = $request->tahun_ajaran[5].$request->tahun_ajaran[6].$request->tahun_ajaran[7].$request->tahun_ajaran[8];
+
+            if (strlen((int)$tahun1) != 4) {
+                return redirect('admin/ujian/'.$ujian_id->code)->with('gagal', 'tahun ajaran tidak valid, contoh "2022/2023" tanpa tanda petik');
+            }
+            $satu = (int)$tahun1+1;
+            if (strlen((int)$tahun2) != 4 || (int)$tahun2 != $satu) {
+                return redirect('admin/ujian/'.$ujian_id->code)->with('gagal', 'tahun ajaran tidak valid, contoh "2022/2023" tanpa tanda petik');
+            }
+
+        }else{
+            return redirect('admin/ujian/'.$ujian_id->code)->with('gagal', 'tahun ajaran tidak valid, contoh "2022/2023" tanpa tanda petik');
+        }
+        // dd($request->mapel);
+                if($request->tahun_ajaran){
+            $ujian_mapel = Ujian::where('code','=',$code)->update([
+                'tahun_ajaran'=>$request->tahun_ajaran
+            ]);
+        }
+        if($request->mapel){
+            $ujian_mapel = Ujian::where('code','=',$code)->update([
+                'mapel_id'=>$request->mapel
+            ]);
+        }
+        if($request->type){
+            $ujian_type = Ujian::where('code','=',$code)->update([
+                'type'=>$request->type
+            ]);
+        }
+        
+        if($ujian_id->judul != $request->judul){
+            $ujian_update = Ujian::where('code','=',$code)->update([
+                'judul'=>$request->judul
+            ]);
+        }
         if ($request->timeujian != NULL) {
 
             $date = date('Y-m-d', strtotime($request->timeujian));
             $time = date('H:i:s', strtotime($request->timeujian));
             $request->timeujian = date('Y-m-d H:i:s', strtotime("$date $time"));
-            $ujian = Ujian::where('code','=',$code)->firstOrFail();
+            $ujian = Ujian::where('code','=',$code)->first();
             $time = Time::where('id','=',$ujian->time_id)->update([
                 'date_time' => $request->timeujian,
                 'time'=> $request->timeupdate
@@ -422,26 +489,35 @@ class allujiancontroller extends Controller
         }
     }
     public function create(){
+        $time = Carbon::now('Asia/Jakarta');
+        $mont = date('m', strtotime($time));
         $mapel = Mapel::get();
-        $kelase = Kelase::get();
+        $kelases = Kelase::get();
+        $collect = collect([]);
+        foreach ($kelases as $kelas) {
+            if ($kelas->kelas != "LULUS") {
+                $collect->push($kelas);
+            }
+        }
         return view('admin/create',[
-            'title'=>['Super admin','Ujian','Detail','Buat ujian'],
+            'title'=>['Administrator','Ujian','Detail','Buat ujian'],
             'mapels'=>$mapel,
-            'kelases'=>$kelase,
+            'mont'=>$mont,
+            'kelases'=>$collect,
         ]);
     }
     public function createprocess(Request $request){
         $validate = $request->validate([
             'judul'=>'required',
             'kelas'=>'required',
-            'repeat'=>'required',
+            'type'=>'required',
             'status'=>'required',
             'mapel'=>'required',
-            'time'=>'required|integer',
+            'time'=>'required',
             'soal'=>'integer',
-            'pilihan'=>'integer'
+            'semester'=>'required',
         ]);
-        $time = Carbon::now('Asia/Jakarta');
+        $time = Carbon::now();
         $year = date('Y', strtotime($time));
         $mont = date('m', strtotime($time));
         $day = date('d', strtotime($time));
@@ -450,12 +526,30 @@ class allujiancontroller extends Controller
         $random3 = Str::random(1);
         $random4= Str::random(1);
 
+if (strlen($request->tahun_ajaran) == 9) {
+            $tahun1 = $request->tahun_ajaran[0].$request->tahun_ajaran[1].$request->tahun_ajaran[2].$request->tahun_ajaran[3];
+
+            $tahun2 = $request->tahun_ajaran[5].$request->tahun_ajaran[6].$request->tahun_ajaran[7].$request->tahun_ajaran[8];
+
+            if (strlen((int)$tahun1) != 4) {
+                return redirect('admin/ujian/create')->with('gagal', 'tahun ajaran harus di isi contoh "2022/2023" tanpa tanda petik')->withErrors($validate, 'tahun ajaran');
+            }
+            $satu = (int)$tahun1+1;
+            if (strlen((int)$tahun2) != 4 || (int)$tahun2 != $satu) {
+                return redirect('admin/ujian/'.$ujian_id->code)->with('gagal', 'tahun ajaran tidak valid, contoh "2022/2023" tanpa tanda petik');
+            }
+
+        }else{
+            return redirect('admin/ujian/create')->with('gagal', 'tahun ajaran harus di isi contoh "2022/2023" tanpa tanda petik ')->withErrors($validate, 'tahun ajaran');
+        }
         $code = "$day[1]$random$day[0]$random2$mont$random3$year[2]$year[3]$random4";
 
 
         $date = date('Y-m-d', strtotime($request->ujiandatetime));
         $time = date('H:i:s', strtotime($request->ujiandatetime));
         $split_time = date('Y-m-d H:i:s', strtotime("$date $time"));
+
+        $semester = $mont <= 06 ? "genap" : ($mont > 06 ? "ganjil" : 'genap');
 
         $time = new Time;
         $time->date_time = $split_time;
@@ -467,9 +561,10 @@ class allujiancontroller extends Controller
         $ujian->keterangan = $request->keterangan;
         $ujian->kelase_id = $request->kelas;
         $ujian->user_id = Auth::user()->id;
-        $ujian->repeat = $request->repeat;
+        $ujian->type = $request->type;
+        $ujian->semester = $request->semester;
+        $ujian->tahun_ajaran = $request->tahun_ajaran;
         $ujian->kkm = $request->kkm;
-        $ujian->umum = $request->umum;
         $ujian->code = $code;
         $ujian->time_id = $time->id;
         $ujian->mapel_id = $request->mapel;
@@ -484,7 +579,7 @@ class allujiancontroller extends Controller
                 $soal->ujian_id = $ujian->id;
                 $soal->save();
 
-                for ($b=0; $b < $request->pilihan; $b++) { 
+                for ($b=0; $b < 2; $b++) { 
                     $pilihan = new Pilihan;
                     $pilihan->pilihan = "";
                     $pilihan->soal_id = $soal->id;
@@ -493,20 +588,6 @@ class allujiancontroller extends Controller
             }
         }
         return redirect('s/admin/ujian/'.$ujian->code.'/edit')->with('berhasil', 'ujian berhasil ditambahkan');
-    }
-    public function repeat($code){
-        $ujian = Ujian::where('code','=',$code)->first();
-        if($ujian->repeat == 'no'){
-            $ujian = Ujian::where('code','=',$code)->update([
-                'repeat'=>"yes"
-            ]);
-        }
-        elseif($ujian->repeat == 'yes'){
-            $ujian = Ujian::where('code','=',$code)->update([
-                'repeat'=>"no"
-            ]);
-        }
-        return $ujian;
     }
     public function judul(Request $request, $code){
         $ujian = Ujian::where('code','=',$code)->update([
@@ -523,32 +604,34 @@ class allujiancontroller extends Controller
         return $ujian;
     }
     public function kelas(Request $request, $code){
-        $kelas = Kelase::where('kelas','=',$request->value)->first();
+        $kelas = Kelase::where('kelas','=',$request->value)->firstOrFail();
         $ujian = Ujian::where('code','=',$code)->update([
             'kelase_id' => $kelas->id
         ]);
         return $ujian;
     }
     public function allujian(){
-        $ujian = Ujian::orderBy('id','desc')->get();
+        $ujian = Ujian::orderBy('id','desc')->simplePaginate(20);
+        $time = Carbon::now();
+        $y = date('Y', strtotime($time));
+        $collect = collect([]);
+        for ($i=2022; $i <= $y; $i++) { 
+            $collect->push($i);
+        }
+        $kelases = Kelase::get();
+        $kelases_collect = collect([]);
+        
+        foreach ($kelases as $kelas) {
+            if ($kelas->kelas != "LULUS") {
+                $kelases_collect->push($kelas);
+            }
+        }
         return view('sadmin/allujian',[
-            'title' => ['Super admin','Semua ujian'],
-            'ujians'=>$ujian
+            'title' => ['Administrator','Semua ujian'],
+            'ujians'=>$ujian,
+            'tahuns'=>$collect,
+            'kelases'=>$kelases_collect
         ]);
-    }
-    public function umum($code){
-        $ujian = Ujian::where('code','=',$code)->first();
-        if($ujian->umum == 'no'){
-            $ujian = Ujian::where('code','=',$code)->update([
-                'umum'=>"yes"
-            ]);
-        }
-        elseif($ujian->umum == 'yes'){
-            $ujian = Ujian::where('code','=',$code)->update([
-                'umum'=>"no"
-            ]);
-        }
-        return $ujian;
     }
     public function kkm(Request $request, $code){
         $ujian = Ujian::where('code','=',$code)->update([
@@ -558,15 +641,13 @@ class allujiancontroller extends Controller
     }
     public function destroy(Request $request){
         $ujian = Ujian::where('id','=',$request->id)->first();
-        $soals = Soal::where('ujian_id','=',$ujian->id)->get();
-        $collect = collect([]);
-        foreach($soals as $soal){
-            $collect->push($soal->id);
+        $nilai = Nilai::where('ujian_id','=',$ujian->id)->delete();
+        $soals = Soal::where('ujian_id','=', $ujian->id)->get();
+        foreach ($soals as $soal) {
+            $pilihan = Pilihan::where('soal_id','=',$soal->id)->delete();
         }
-        $kjawaban = Kjawaban::whereIn('soal_id',$collect)->delete();
-        $pilihan = Pilihan::whereIn('soal_id',$collect)->delete();
-        $soals = Soal::where('ujian_id','=',$ujian->id)->delete();
-        $ujian = Ujian::where('id','=',$request->id)->delete();
+        $soals_destroy = Soal::where('ujian_id','=', $ujian->id)->delete();
+        $ujian_destroy = Ujian::where('id','=',$request->id)->delete();
         return back()->with('success', 'ujian dihapus');
     }
     public function serahkan($code){
@@ -607,5 +688,78 @@ class allujiancontroller extends Controller
         }
         $nilai = Nilai::where('id','=',$request->nilai_id)->delete();
         return redirect('s/admin/ujian/ujianmonitoring/'.$code)->with('sukses', "Data di Hapus");
+    }
+    public function filter(Request $request){
+        if ($request->tahun == null || $request->semester == null) {
+            return redirect('s/admin/ujian')->with('filter_alert', "Filter gagal")->with('color','is-danger');
+        }
+        $auth = auth()->user();
+        $filters = Ujian::where('semester','=',$request->semester)->where('user_id','=',$auth->id)->orderBy('id', 'DESC')->get();
+        $collect = collect([]);
+        foreach($filters as $filter){
+            if (date('Y',strtotime($filter->created_at)) == $request->tahun) {
+                $collect->push($filter);
+            }
+        }
+        return redirect('s/admin/ujian')->with('filters', $collect)->with('filter_alert', "Filter berhasil")->with('color', 'is-success');
+    }
+    public function filter_monitor(Request $request){
+        if ($request->tahun == null || $request->semester == null) {
+            return redirect('s/admin/ujian/ujianmonitoring')->with('filter_alert', "Filter gagal")->with('color','is-danger');
+        }
+        $auth = auth()->user();
+        $filters = Ujian::where('semester','=',$request->semester)->where('user_id','=',$auth->id)->orderBy('id', 'DESC')->get();
+        $collect = collect([]);
+        foreach($filters as $filter){
+            if (date('Y',strtotime($filter->created_at)) == $request->tahun) {
+                $collect->push($filter);
+            }
+        }
+        return redirect('s/admin/ujian/ujianmonitoring')->with('filters', $collect)->with('filter_alert', "Filter berhasil")->with('color', 'is-success');
+    }
+    public function filter_all(Request $request){
+        if ($request->tahun == null || $request->semester == null || $request->kelas == null) {
+            return redirect('s/admin/ujian')->with('filter_alert', "Data filter harus di isi")->with('color','is-danger');
+        }
+        $filters = Ujian::where('semester','=',$request->semester)->where('kelase_id','=', $request->kelas)->orderBy('id', 'DESC')->get();
+        $collect = collect([]);
+        foreach($filters as $filter){
+            if (date('Y',strtotime($filter->created_at)) == $request->tahun) {
+                $collect->push($filter);
+            }
+        }
+        return redirect('s/admin/ujian/all')->with('filters', $collect)->with('filter_alert', "Filter berhasil")->with('color', 'is-success');
+    }
+    public function filter_monitor_all(Request $request){
+        if ($request->tahun == null || $request->semester == null || $request->kelas == null) {
+            return redirect('s/admin/ujian/ujianmonitoring/all')->with('filter_alert', "Filter gagal")->with('color','is-danger');
+        }
+        $filters = Ujian::where('semester','=',$request->semester)->orderBy('id', 'DESC')->get();
+        $collect = collect([]);
+        foreach($filters as $filter){
+            if (date('Y',strtotime($filter->created_at)) == $request->tahun) {
+                $collect->push($filter);
+            }
+        }
+        return redirect('s/admin/ujian/ujianmonitoring/all')->with('filters', $collect)->with('filter_alert', "Filter berhasil")->with('color', 'is-success');
+    }
+    public function filter_nilai(Request $request){
+        if ($request->tahun == null || $request->semester == null) {
+            return redirect('s/admin/ujian')->with('filter_alert', "Data filter harus di isi")->with('color','is-danger');
+        }
+        
+        $filters = Ujian::where('semester','=',$request->semester)->orderBy('id', 'DESC')->get();
+        $push = collect([]);
+        foreach ($filters as $filter) {
+            $push->push($filter->id);
+        }
+        $nilais = Nilai::wherein('ujian_id',$filters)->orderBy('id', 'DESC')->get();
+        $collect = collect([]);
+        foreach($nilais as $nilai){
+            if (date('Y',strtotime($nilai->created_at)) == $request->tahun) {
+                $collect->push($nilai);
+            }
+        }
+        return redirect('s/admin/semua_nilai')->with('filters', $collect)->with('filter_alert', "Filter berhasil")->with('color', 'is-success');
     }
 }

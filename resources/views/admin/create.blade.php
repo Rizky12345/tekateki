@@ -3,197 +3,256 @@
 @section('body_link')
 
 @if($errors->any())
-	<div class="notification is-danger">
- 	Semua form harus di isi selain pilihan dan keterangan
+<div class="notification is-danger">
+	Semua form harus di isi selain pilihan dan keterangan
 </div>
 @endif
-
+@if(session('gagal'))
+<div class="notification is-danger">
+	{{session('gagal')}}
+</div>
+@endif
+{{-- @dd(session('validate')['kkm']) --}}
 <form @can('admin') action="{{ url('admin/ujian/create/process') }}" @endcan @can('sadmin') action="{{ url('s/admin/ujian/create/process') }}" @endcan method="POST">
 	@csrf
-	<div class="container">
-		<br>
-		<br>
-		<h1 class="title">Buat Ujian</h1>
-		<br>
-		<div class="columns">
-			<div class="column">
-				<div class="field">
-					<label class="label">Judul Ujian</label>
-					<div class="control">
-						<input class="input" type="text" placeholder="Judul Ujian" name="judul" autocomplete="off">
+	<div class="card">
+		<div class="card-header">
+			<div class="card-header-title">
+				
+			</div>
+		</div>
+		<div class="card-content">
+			<div class="field is-horizontal">
+				<div class="field-label is-normal">
+					<Label class="label">Nama ujian</Label>
+				</div>
+				<div class="field-body">
+					<div class="field is-narrow">
+						<div class="control">
+							<input class="input" type="text" placeholder="Judul Ujian" name="judul" autocomplete="off" value="{{ session('validate') ? session('validate')['judul'] : old('judul') }}">
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="columns">
 			@can('sadmin')
-			<div class="column">
-				<div class="field">
-					<label class="label">Kelas</label>
-					<div class="select">
-						<select name="kelas" id="">
-							<option value="">Pilih Kelas</option>
-							@foreach($kelases as $kelase)
-							<option value="{{ $kelase->id }}">{{ $kelase->kelas }}</option>
-							@endforeach
-						</select>
+			<div class="field is-horizontal">
+				<div class="field-label is-normal">
+					<Label class="label">Kelas</Label>
+				</div>
+				<div class="field-body">
+					<div class="field is-narrow">
+						<div class="control">
+							<div class="select">
+								<select name="kelas" id="">
+									<option value="" >Pilih Kelas</option>
+									@foreach($kelases as $kelase)
+									<option value="{{ $kelase->id }}" {{ session('validate')['kelas'] == $kelase->id ? 'selected' : (old('kelas') == $kelase->id ? 'selected' : '') }}>{{ $kelase->kelas }}</option>
+									@endforeach
+								</select>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 			@endcan
-			<div class="column">
-				<div class="field">
-					<label class="label">KKM</label>
-					<div class="select">
-						<select name="kkm" id="">
-							<option value="">Pilih KKM</option>
-							<option value="50">50</option>
-							<option value="60">60</option>
-							<option value="65">65</option>
-							<option value="70">70</option>
-							<option value="75">75</option>
-							<option value="80">80</option>
-						</select>
-					</div>
+			<div class="field is-horizontal">
+				<div class="field-label is-normal">
+					<Label class="label">KKM</Label>
 				</div>
-			</div>
-			<div class="column">
-				<div class="field">
-					<label class="label">Repeat</label>
-					<div class="control pt-2">
-						<label class="radio">
-							<input type="radio" name="repeat" value="yes">
-							Yes
-						</label>
-						<label class="radio">
-							<input type="radio" name="repeat" value="no">
-							No
-						</label>
-					</div>
-				</div>
-			</div>
-			<div class="column">
-				<div class="field">
-					<label class="label">Status</label>
-					<div class="select">
-						<select name="status" id="">
-							<option value="lock">Pilih Status Ujian</option>
-							<option value="lock">Lock</option>
-							<option value="disable">Disable</option>
-							<option value="enable">Enable</option>
-						</select>
-					</div>
-				</div>
-			</div>
-			<div class="column">
-				<div class="field">
-					<label class="label">Mapel</label>
-					<div class="select">
-						<select name="mapel" id="">
-							<option value="">Pilih Mapel Ujian</option>
-							@foreach($mapels as $mapel)
-							<option value="{{ $mapel->id }}">{{ $mapel->mapel }}</option>
-							@endforeach
-						</select>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="columns">
-			<div class="column">
-				<div class="field">
-					<label class="label">Keterangan</label>
-					<div class="control">
-						<textarea id="" cols="30" rows="10" class="textarea" style="resize: none; height: 115px;" placeholder="Keterangan" name="keterangan"></textarea>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		
-		<div class="columns">
-			<div class="column is-2">
-				<div class="field">
-					<label class="label">Umum?</label>
-					<div class="control pt-2">
-						<label class="radio">
-							<input type="radio" name="umum" value="yes">
-							Yes
-						</label>
-						<label class="radio">
-							<input type="radio" name="umum" value="no">
-							No
-						</label>
-					</div>
-				</div>
-			</div>
-			<div class="column">
-				<div class="field">
-					<label class="label">Tanggal mulai</label>
-					<div class="control">
-						<input type="datetime-local" class="input" name="ujiandatetime">
-					</div>
-				</div>
-			</div>
-			<div class="column">
-				<div class="field">
-					<label class="label">Waktu pengerjaan</label>
-					<div class="control">
-
-						<div class="select">
-							<select name="time" id="">
-								<option value="">Pilih waktu</option>
-								<option value="15">15 menit</option>
-								<option value="30">30 menit</option>
-								<option value="60">60 menit</option>
-								<option value="90">90 menit</option>
-							</select>
-						</div><br>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="columns">
-			<div class="column is-3">
-				<div class="field">
-					<label class="label">Jumlah Soal</label>
-					<div class="control">
-						<div class="select">
-							<select name="soal" id="">
-								<option value="">Pilih Soal</option>
-								<option value="5">5</option>
-								<option value="10">10</option>
-								<option value="15">15</option>
-								<option value="20">20</option>
-								<option value="30">30</option>
-								<option value="40">40</option>
-							</select>
+				<div class="field-body">
+					<div class="field is-narrow">
+						<div class="control">
+							<div class="select">
+								<select name="kkm" id="" value="{{ old('kkm') }}">
+									<option value="">Pilih KKM</option>
+									<option value="50" @if(session('validate') != null && session('validate')['kkm'] == "50") selected @elseif(old('kkm') == 50) selected @endif>50</option>
+									<option value="60" @if(session('validate') != null && session('validate')['kkm'] == "60") selected @elseif(old('kkm') == 60) selected @endif>60</option>
+									<option value="65" @if(session('validate') != null && session('validate')['kkm'] == "65") selected @elseif(old('kkm') == 65) selected @endif>65</option>
+									<option value="70" @if(session('validate') != null && session('validate')['kkm'] == "70") selected @elseif(old('kkm') == 70) selected @endif>70</option>
+									<option value="75" @if(session('validate') != null && session('validate')['kkm'] == "75") selected @elseif(old('kkm') == 75) selected @endif>75</option>
+									<option value="80" @if(session('validate') != null && session('validate')['kkm'] == "80") selected @elseif(old('kkm') == 80) selected @endif>80</option>
+								</select>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="column is-5">
-				<div class="field">
-					<label class="label">Jumlah pilihan ganda</label>
-					<div class="control">
-						<div class="select">
-							<select name="pilihan" id="">
-								<option value="">Pilih pilihan</option>
-								<option value="2">2</option>
-								<option value="3">3</option>
-								<option value="4">4</option>
-							</select>
+			<div class="field is-horizontal">
+				<div class="field-label is-normal">
+					<Label class="label">Semester</Label>
+				</div>
+				<div class="field-body">
+					<div class="field is-narrow">
+						<div class="control">
+							<div class="select">
+								<select name="semester" id="">
+									<option value="" @if(session('validate') != null && session('validate')['semester'] == "") selected @elseif(old('semester') == "") selected @endif>Pilih Semester</option>
+									<option value="ganjil" @if(session('validate') != null && session('validate')['semester'] == "ganjil") selected @elseif(old('semester') == "ganjil") selected @endif>Ganjil</option>
+									<option value="genap" @if(session('validate') != null && session('validate')['semester'] == "genap") selected @elseif(old('semester') == "genap") selected @endif>Genap</option>
+								</select>
+							</div>
 						</div>
-						<div style="line-height: 80%;">
-							<small class="is-small">perhatian: jumlah pilihan ganda bisa di kosongkan dengan memilih pilihan paling atas</small>
+					</div>
+				</div>
+			</div>
+			<div class="field is-horizontal">
+				<div class="field-label is-normal">
+					<Label class="label">Type ujian</Label>
+				</div>
+				<div class="field-body">
+					<div class="field is-narrow">
+						<div class="control">
+							<div class="select">
+								<select name="type" id="">
+									<option value="" @if(session('validate') != null && session('validate')['type'] == "") selected @elseif(old('type') == "") selected @endif>Pilih type</option>
+									<option value="uas" @if(session('validate') != null && session('validate')['type'] == "uas") selected @elseif(old('type') == "uas") selected @endif>UAS</option>
+									<option value="uts" @if(session('validate') != null && session('validate')['type'] == "uts") selected @elseif(old('type') == "uts") selected @endif>UTS</option>
+									<option value="ulangan harian" @if(session('validate') != null && session('validate')['type'] == "ulangan harian") selected @elseif(old('type') == "ulangan harian") selected @endif>Ulangan Harian</option>
+									<option value="latihan" @if(session('validate') != null && session('validate')['type'] == "latihan") selected @elseif(old('type') == "latihan") selected @endif>Latihan</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="field is-horizontal">
+				<div class="field-label is-normal">
+					<Label class="label">Mapel</Label>
+				</div>
+				<div class="field-body">
+					<div class="field is-narrow">
+						<div class="control">
+							<div class="select">
+								<select name="mapel" id="">
+									<option value="" @if(session('validate') != null && session('validate')['mapel'] == "") selected @elseif(old('mapel') == "") selected @endif>Pilih Mapel Ujian</option>
+									@foreach($mapels as $mapel)
+									<option value="{{ $mapel->id }}" @if(session('validate') != null && session('validate')['mapel'] == $mapel->id) selected @elseif(old('mapel') == $mapel->id) selected @endif>{{ $mapel->mapel }}</option>
+									@endforeach
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="field is-horizontal">
+				<div class="field-label is-normal">
+					<Label class="label">Tahun ajaran</Label>
+				</div>
+				<div class="field-body">
+					<div class="field is-narrow">
+						<div class="control">
+							<input class="input" type="text" placeholder="tahun ajara" name="tahun_ajaran" autocomplete="off" value="{{ session('validate') ? session('validate')['tahun_ajaran'] : old('tahun_ajaran') }}">
+							<small>Contoh penulisan: 2022/2023</small>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="field is-horizontal">
+				<div class="field-label is-normal">
+					<Label class="label">Status</Label>
+				</div>
+				<div class="field-body">
+					<div class="field is-narrow">
+						<div class="control">
+							<div class="select">
+								<select name="status" id="">
+									<option value="" @if(session('validate') != null && session('validate')['status'] == "") selected @elseif(old('status') == "") selected @endif>Pilih Status Ujian</option>
+									<option value="lock" @if(session('validate') != null && session('validate')['status'] == "lock") selected @elseif(old('status') == "lock") selected @endif>Lock</option>
+									<option value="disable" @if(session('validate') != null && session('validate')['status'] == "disable") selected @elseif(old('status') == "disable") selected @endif>Disable</option>
+									<option value="enable" @if(session('validate') != null && session('validate')['status'] == "enable") selected @elseif(old('status') == "enable") selected @endif>Enable</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="field is-horizontal">
+				<div class="field-label is-normal">
+					<Label class="label">Tanggal mulai</Label>
+				</div>
+				<div class="field-body">
+					<div class="field is-narrow">
+						<div class="control">
+							<input type="datetime-local" class="input" name="ujiandatetime" >
+							<small><li>Tanggal dan waktu ujian di buka untuk siswa</li></small>
+							<small><li>Form ini tidak wajib di isi</li></small>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="field is-horizontal">
+				<div class="field-label is-normal">
+					<Label class="label">Waktu pengerjaan</Label>
+				</div>
+				<div class="field-body">
+					<div class="field is-narrow">
+						<div class="control">
+							<div class="select">
+								<select name="time" id="">
+									<option value="" @if(session('validate') != null && session('validate')['time'] == "") selected @elseif(old('time') == "") selected @endif>Pilih waktu</option>
+									<option value="15" @if(session('validate') != null && session('validate')['time'] == "15") selected @elseif(old('time') == 15) selected @endif>15 menit</option>
+									<option value="30" @if(session('validate') != null && session('validate')['time'] == "30") selected @elseif(old('time') == 30) selected @endif>30 menit</option>
+									<option value="60" @if(session('validate') != null && session('validate')['time'] == "60") selected @elseif(old('time') == 60) selected @endif>60 menit</option>
+									<option value="90" @if(session('validate') != null && session('validate')['time'] == "90") selected @elseif(old('time') == 90) selected @endif>90 menit</option>
+								</select>
+							</div><br>
+							<small>Waktu pengerjaan ujian</small>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="field is-horizontal">
+				<div class="field-label is-normal">
+					<Label class="label">Jumlah soal</Label>
+				</div>
+				<div class="field-body">
+					<div class="field is-narrow">
+						<div class="control">
+							<div class="select">
+								<select name="soal" id="">
+									<option value="" @if(session('validate') != null && session('validate')['soal'] == "") selected @elseif(old('soal') == "") selected @endif>Pilih Soal</option>
+									<option value="5" @if(session('validate') != null && session('validate')['soal'] == "5") selected @elseif(old('soal') == "5") selected @endif>5</option>
+									<option value="10" @if(session('validate') != null && session('validate')['soal'] == "10") selected @elseif(old('soal') == "10") selected @endif>10</option>
+									<option value="15" @if(session('validate') != null && session('validate')['soal'] == "15") selected @elseif(old('soal') == "15") selected @endif>15</option>
+									<option value="20" @if(session('validate') != null && session('validate')['soal'] == "20") selected @elseif(old('soal') == "20") selected @endif>20</option>
+									<option value="30" @if(session('validate') != null && session('validate')['soal'] == "30") selected @elseif(old('soal') == "30") selected @endif>30</option>
+									<option value="40" @if(session('validate') != null && session('validate')['soal'] == "40") selected @elseif(old('soal') == "40") selected @endif>40</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="field is-horizontal">
+				<div class="field-label is-normal">
+					<Label class="label">Keterangan</Label>
+				</div>
+				<div class="field-body">
+					<div class="field is-narrow">
+						<div class="control">
+							<textarea id="" cols="30" rows="10" class="textarea" style="resize: none; height: 115px;" placeholder="Keterangan" name="keterangan">{{ session('validate') ? session('validate')['keterangan'] : old('keterangan') }}</textarea>
+							<small>Form ini tidak wajib di isi</small>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="field is-horizontal">
+				<div class="field-label is-normal">
+					<Label class="label"><button class="button is-primary">Buat ujian</button></Label>
+				</div>
+				<div class="field-body">
+					<div class="field is-narrow">
+						<div class="control">
+							
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<button class="button is-dark">Set</button>
-		<br><br><br>
 	</div>
+</div>
+
+<br><br><br>
+</div>
 </form>
 @endsection

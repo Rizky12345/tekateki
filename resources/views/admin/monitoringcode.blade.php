@@ -60,6 +60,21 @@ foreach($nilais as $nilai){
     @endif
   </div>
 </div>
+<div class="card">
+  <div class="card-title">
+    <div class="card-header-title">
+      Excel
+    </div>
+  </div>
+  <div class="card-content">
+    @can('admin')
+    <a href="{{ url("s/admin/ujian/ujianmonitoring/$ujian->code/generate") }}">Excel</a>
+    @endcan
+    @can('sadmin')
+    <a href="{{ url("s/admin/$ujian->code/generate") }}">Excel</a>
+    @endcan
+  </div>
+</div>
 
 <div class="card">
   <div class="card-head">
@@ -69,14 +84,11 @@ foreach($nilais as $nilai){
     <div class="columns is-multiline is-10 is-flex is-vcentered">
       <div class="column is-5 has-text-centered">
         <h2 class="subtitle" style="margin-bottom:0px;">Data yang mengerjakan</h2>
-        @if($ujian->repeat == "no")
+
         <div id="divcanvas1" >
           <canvas id="myChart1"></canvas>
         </div>
-        @else
-        <br>
-        <h1 class="title is-1">{{ $nomer_nilai }}</h1>
-        @endif
+
       </div>
       <div class="column is-5 has-text-centered">
         <h2 class="subtitle" style="margin-bottom:0px;">Data lulus dan tidak</h2>
@@ -101,6 +113,7 @@ foreach($nilais as $nilai){
           <th>Nama</th>
           <th>Nilai</th>
           <th>Status</th>
+          <th>Type</th>
         </tr>
       </thead>
       <tbody>
@@ -130,6 +143,7 @@ foreach($nilais as $nilai){
           @else
           <td>tidak lulus</td>
           @endif
+          <td>@if($nilai->type == 'tester') {{ $nilai->type }} @else - @endif</td>
           <td class="is-actions-cell">
             <div class="buttons is-right">
               <a @can('admin') href="{{ url("admin/ujian/$ujian->code/$nilai->user_id/".$nilai->id) }}" @endcan @can('sadmin') href="{{ url("s/admin/ujian/$ujian->code/$nilai->user_id/".$nilai->id) }}" @endcan>
@@ -143,6 +157,7 @@ foreach($nilais as $nilai){
             </div>
           </td>
         </tr>
+
         @endforeach
       </tbody>
     </table>
@@ -162,7 +177,7 @@ $belum = 0;
 @endphp
 @endforeach
 
-
+{{-- @dd($group) --}}
 @php
 $sudah = count($group);
 $belum = $peserta - $sudah;

@@ -54,7 +54,6 @@ class acceptcontroller extends Controller
 		$collect->push($request->page);
 		if($jawabans->isEmpty()){
 			$save = new Jawaban;
-			$save->jawaban = $request['jawaban'];
 			$save->soal_id = $request['id'];
 			$save->ujian_id = $ujian->id;
 			$save->pilihan_id = $request['pilihan_id'];

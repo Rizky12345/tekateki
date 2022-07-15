@@ -17,11 +17,13 @@ class Ujian extends Migration
             $table->id();
             $table->string('judul');
             $table->string('code');
-            $table->string('repeat');
+            $table->string('type');
             $table->string('status');
+            $table->string('oldos')->nullable();
             $table->integer('kkm');
+            $table->string('semester');
+            $table->string('tahun_ajaran')->nullable();
             $table->string('serahkan')->nullable();
-            $table->string('umum');
             $table->text('keterangan')->nullable();
             $table->foreignId('mapel_id');
             $table->foreignId('kelase_id');

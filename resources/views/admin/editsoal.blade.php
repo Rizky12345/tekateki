@@ -81,14 +81,14 @@ $count_pilihan_json = 0;
 						<input class="file-input" onchange="changeFile(this, '.file-name-soal-{{ $key }}{{ $a }}')" type="file" name="soalfile{{ $a }}">
 						<span class="file-cta">
 							<span class="file-icon">
-								<i class="fa fa-upload"></i>
+								<i class="mdi mdi-upload"></i>
 							</span>
 							<span class="file-label">
-								Small file…
+								Choose a file...
 							</span>
 						</span>
 						<span class="file-name-soal-{{ $key }}{{ $a }} ml-1 mt-1">
-							noting
+							No file uploaded
 						</span>
 					</label>
 				</div>
@@ -136,14 +136,14 @@ $count_pilihan_json = 0;
 								<input class="file-input" onchange="changeFile(this, '.file-name-pilihan-{{ $keyPilihan }}{{ $a }}')" type="file" name="pilihanfile{{ $count_pilihan }}">
 								<span class="file-cta">
 									<span class="file-icon">
-										<i class="fa fa-upload"></i>
+										<i class="mdi mdi-upload"></i>
 									</span>
 									<span class="file-label">
-										Small file…
+										Choose a file…
 									</span>
 								</span>
 								<span class="file-name-pilihan-{{ $keyPilihan }}{{ $a }} ml-1 mt-1">
-									noting
+									No file uploaded
 								</span>
 							</label>
 						</div>
@@ -163,7 +163,7 @@ $count_pilihan_json = 0;
 				<div id="addchoice{{ $a }}" @if($soal->type == "essay") class="is-hidden" @endif>
 					
 				</div>
-				<button  type="button" onclick="tambah_pilihan('{{ $soal->id }}', 'addchoice{{ $a }}', {{ $a }})" id="btn-choice{{ $a }}" @if($soal->type == "essay") class="button is-hidden" @else class="button" @endif>++pilihan</button>
+				<button  type="button" onclick="tambah_pilihan({{ $soal->id }}, 'addchoice{{ $a }}', {{ $a }})" id="btn-choice{{ $a }}"  class="button @if($soal->type == "essay") is-hidden @endif">Tambah Pilihan</button>
 				<br>
 			</div>
 		</div>
@@ -175,7 +175,7 @@ $count_pilihan_json = 0;
 value="{{ $a }}" name="soalcount" id="a_count">
 <input type="text" class="is-hidden" value="{{ $count_pilihan }}" name="pilihancount" id="count_pilihan">
 </form>
-<button style="margin-bottom: 100px;" class="button" id="btn-soal" onclick="btn_soal()">++Soal</button>
+<button style="margin-bottom: 100px;" class="button" id="btn-soal" onclick="btn_soal()">Tambah Soal</button>
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script>
 
@@ -269,7 +269,11 @@ window.onscroll = function() {
 	}
 
 </script>
-
+@if($pilihans->isEmpty());
+@php
+$keyPilihan = 0;
+@endphp
+@endif
 <script>
 	let count_pilihan = {{ $count_pilihan }};
 	let keyPilihan = {{ $keyPilihan }};
@@ -295,7 +299,7 @@ window.onscroll = function() {
 				$('#load').hide();
 				count_pilihan++;
 				keyPilihan++;
-				$(`#${id}`).append(`<div id="pilihan_select${count_pilihan}"><label class="radio pr-1"><input class="mt-3" name="pilih${name_id}" value="${data.pilihan}" id="pilih" type="radio" onclick="funcctionName(${name_id}, ${soal_id}, ${data.id})"></label><input  type="text" class="is-hidden" value="${data.id}" name="pilihanid${count_pilihan}"><input onchange="changevalue('pilihan','${soal_id}','${ujian_code}', 'pilihan${count_pilihan}${count_pilihan}','${data.id}')" type="text" value="" name="pilihan" id="pilihan${count_pilihan}${count_pilihan}" class="input is-normal" style="width: 90%;" autocomplete="off"><br><div class="file is-small has-name" id="file-small"><label class="file-label"><input class="file-input" onchange="changeFile(this, '.file-name-pilihan-${keyPilihan}${name_id}')" type="file" name="pilihanfile${count_pilihan}"><span class="file-cta"><span class="file-icon"><i class="fa fa-upload"></i></span><span class="file-label">Small file…</span></span><span class="file-name-pilihan-${keyPilihan}${name_id} ml-1 mt-1">noting</span></label></div><button class="button is-dark is-small bp${name_id}" type="button" onclick="delete_type('pilihan', ${data.id}, 'pilihan_select${count_pilihan}','button_pilihan_${count_pilihan}')">Delete pilihan</button><br><br></div>`);
+				$(`#${id}`).append(`<div id="pilihan_select${count_pilihan}"><label class="radio pr-1"><input class="mt-3" name="pilih${name_id}" value="${data.pilihan}" id="pilih" type="radio" onclick="funcctionName(${name_id}, ${soal_id}, ${data.id})"></label><input  type="text" class="is-hidden" value="${data.id}" name="pilihanid${count_pilihan}"><input onchange="changevalue('pilihan','${soal_id}','${ujian_code}', 'pilihan${count_pilihan}${count_pilihan}','${data.id}')" type="text" value="" name="pilihan" id="pilihan${count_pilihan}${count_pilihan}" class="input is-normal" style="width: 90%;" autocomplete="off"><br><div class="file is-small has-name" id="file-small"><label class="file-label"><input class="file-input" onchange="changeFile(this, '.file-name-pilihan-${keyPilihan}${name_id}')" type="file" name="pilihanfile${count_pilihan}"><span class="file-cta"><span class="file-icon"><i class="mdi mdi-upload"></i></span><span class="file-label">Choose a file…</span></span><span class="file-name-pilihan-${keyPilihan}${name_id} ml-1 mt-1">No file uploaded</span></label></div><button class="button is-dark is-small bp${name_id}" type="button" onclick="delete_type('pilihan', ${data.id}, 'pilihan_select${count_pilihan}','button_pilihan_${count_pilihan}')">Delete pilihan</button><br><br></div>`);
 				for (var i = 1; i <= $("#a_count").val(); i++) {
 					let count_radio = $(`input[name="pilih${i}"]`).length;
 					if(count_radio >= 4){
@@ -318,7 +322,6 @@ window.onscroll = function() {
 		});
 	}
 </script>
-
 
 <script type="text/javascript">
 	function funcctionName (count,id,pilihan_id) {
@@ -404,14 +407,14 @@ window.onscroll = function() {
 					<input class="file-input" onchange="changeFile(this, '.file-name-soal-${key}${a}')" type="file" name="soalfile${a}">
 					<span class="file-cta">
 					<span class="file-icon">
-					<i class="fa fa-upload"></i>
+					<i class="mdi mdi-upload"></i>
 					</span>
 					<span class="file-label">
-					Small file…
+					Choose a file…
 					</span>
 					</span>
 					<span class="file-name-soal-${key}${a} ml-1 mt-1">
-					noting
+					No file uploaded
 					</span>
 					</label>
 					</div>
@@ -435,14 +438,14 @@ window.onscroll = function() {
 					<input class="file-input" onchange="changeFile(this, '.file-name-pilihan-${keyPilihan}${a}')" type="file" name="pilihanfile${count_pilihan}">
 					<span class="file-cta">
 					<span class="file-icon">
-					<i class="fa fa-upload"></i>
+					<i class="mdi mdi-upload"></i>
 					</span>
 					<span class="file-label">
-					Small file…
+					Choose a file...
 					</span>
 					</span>
 					<span class="file-name-pilihan-${keyPilihan}${a} ml-1 mt-1">
-					noting
+					No file uploaded
 					</span>
 					</label>
 					</div>
@@ -469,14 +472,14 @@ window.onscroll = function() {
 					<input class="file-input" onchange="changeFile(this, '.file-name-pilihan-${++keyPilihan}${a}')" type="file" name="pilihanfile${count_pilihan}">
 					<span class="file-cta">
 					<span class="file-icon">
-					<i class="fa fa-upload"></i>
+					<i class="mdi mdi-upload"></i>
 					</span>
 					<span class="file-label">
-					Small file…
+					Choose a file…
 					</span>
 					</span>
 					<span class="file-name-pilihan-${keyPilihan}${a} ml-1 mt-1">
-					noting
+					No file uploaded
 					</span>
 					</label>
 					</div>
@@ -489,7 +492,7 @@ window.onscroll = function() {
 					<div id="addchoice${a}">
 					
 					</div>
-					<button  type="button" onclick="tambah_pilihan('${data[0].id}', 'addchoice${a}', ${a})" id="btn-choice${a}" class="button">++pilihan</button>
+					<button  type="button" onclick="tambah_pilihan('${data[0].id}', 'addchoice${a}', ${a})" id="btn-choice${a}" class="button">Tambah Pilihan</button>
 					<br>
 					</div>
 					</div>
@@ -752,7 +755,7 @@ for (var i = 1; i <= $("#a_count").val(); i++) {
 				$('#load').hide();
 				count_pilihan++;
 				keyPilihan++;
-				$(`#${id}`).append(`<div id="pilihan_select${count_pilihan}"><label class="radio pr-1"><input class="mt-3" name="pilih${name_id}" value="${data.pilihan}" id="pilih" type="radio" onclick="funcctionName(${name_id}, ${soal_id}, ${data.id})"></label><input  type="text" class="is-hidden" value="${data.id}" name="pilihanid${count_pilihan}"><input onchange="changevalue('pilihan','${soal_id}','${ujian_code}', 'pilihan${count_pilihan}${count_pilihan}','${data.id}')" type="text" value="" name="pilihan" id="pilihan${count_pilihan}${count_pilihan}" class="input is-normal" style="width: 90%;" autocomplete="off"><br><div class="file is-small has-name" id="file-small"><label class="file-label"><input class="file-input" onchange="changeFile(this, '.file-name-pilihan-${keyPilihan}${name_id}')" type="file" name="pilihanfile${count_pilihan}"><span class="file-cta"><span class="file-icon"><i class="fa fa-upload"></i></span><span class="file-label">Small file…</span></span><span class="file-name-pilihan-${keyPilihan}${name_id} ml-1 mt-1">noting</span></label></div><button class="button is-dark is-small bp${name_id}" type="button" onclick="delete_type('pilihan', ${data.id}, 'pilihan_select${count_pilihan}','button_pilihan_${count_pilihan}')">Delete pilihan</button><br><br></div>`);
+				$(`#${id}`).append(`<div id="pilihan_select${count_pilihan}"><label class="radio pr-1"><input class="mt-3" name="pilih${name_id}" value="${data.pilihan}" id="pilih" type="radio" onclick="funcctionName(${name_id}, ${soal_id}, ${data.id})"></label><input  type="text" class="is-hidden" value="${data.id}" name="pilihanid${count_pilihan}"><input onchange="changevalue('pilihan','${soal_id}','${ujian_code}', 'pilihan${count_pilihan}${count_pilihan}','${data.id}')" type="text" value="" name="pilihan" id="pilihan${count_pilihan}${count_pilihan}" class="input is-normal" style="width: 90%;" autocomplete="off"><br><div class="file is-small has-name" id="file-small"><label class="file-label"><input class="file-input" onchange="changeFile(this, '.file-name-pilihan-${keyPilihan}${name_id}')" type="file" name="pilihanfile${count_pilihan}"><span class="file-cta"><span class="file-icon"><i class="mdi mdi-upload"></i></span><span class="file-label">Choose a file…</span></span><span class="file-name-pilihan-${keyPilihan}${name_id} ml-1 mt-1">No file uploaded</span></label></div><button class="button is-dark is-small bp${name_id}" type="button" onclick="delete_type('pilihan', ${data.id}, 'pilihan_select${count_pilihan}','button_pilihan_${count_pilihan}')">Delete pilihan</button><br><br></div>`);
 				for (var i = 1; i <= $("#a_count").val(); i++) {
 					let count_radio = $(`input[name="pilih${i}"]`).length;
 					if(count_radio >= 4){
@@ -862,14 +865,14 @@ for (var i = 1; i <= $("#a_count").val(); i++) {
 					<input class="file-input" onchange="changeFile(this, '.file-name-soal-${key}${a}')" type="file" name="soalfile${a}">
 					<span class="file-cta">
 					<span class="file-icon">
-					<i class="fa fa-upload"></i>
+					<i class="mdi mdi-upload"></i>
 					</span>
 					<span class="file-label">
-					Small file…
+					Choose a file…
 					</span>
 					</span>
 					<span class="file-name-soal-${key}${a} ml-1 mt-1">
-					noting
+					No file uploaded
 					</span>
 					</label>
 					</div>
@@ -893,14 +896,14 @@ for (var i = 1; i <= $("#a_count").val(); i++) {
 					<input class="file-input" onchange="changeFile(this, '.file-name-pilihan-${keyPilihan}${a}')" type="file" name="pilihanfile${count_pilihan}">
 					<span class="file-cta">
 					<span class="file-icon">
-					<i class="fa fa-upload"></i>
+					<i class="mdi mdi-upload"></i>
 					</span>
 					<span class="file-label">
-					Small file…
+					Choose a file…
 					</span>
 					</span>
 					<span class="file-name-pilihan-${keyPilihan}${a} ml-1 mt-1">
-					noting
+					No file uploaded
 					</span>
 					</label>
 					</div>
@@ -927,14 +930,14 @@ for (var i = 1; i <= $("#a_count").val(); i++) {
 					<input class="file-input" onchange="changeFile(this, '.file-name-pilihan-${++keyPilihan}${a}')" type="file" name="pilihanfile${count_pilihan}">
 					<span class="file-cta">
 					<span class="file-icon">
-					<i class="fa fa-upload"></i>
+					<i class="mdi mdi-upload"></i>
 					</span>
 					<span class="file-label">
-					Small file…
+					Choose a file…
 					</span>
 					</span>
 					<span class="file-name-pilihan-${keyPilihan}${a} ml-1 mt-1">
-					noting
+					No file uploaded
 					</span>
 					</label>
 					</div>
@@ -947,7 +950,7 @@ for (var i = 1; i <= $("#a_count").val(); i++) {
 					<div id="addchoice${a}">
 					
 					</div>
-					<button  type="button" onclick="tambah_pilihan('${data[0].id}', 'addchoice${a}', ${a})" id="btn-choice${a}" class="button">++pilihan</button>
+					<button  type="button" onclick="tambah_pilihan('${data[0].id}', 'addchoice${a}', ${a})" id="btn-choice${a}" class="button">Tambah Pilihan</button>
 					<br>
 					</div>
 					</div>

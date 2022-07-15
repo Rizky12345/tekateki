@@ -21,7 +21,7 @@ $i = 0;
 		@if($pilihan->soal_id == $soal->id)
 		<div class="control">
 			<label class="radio">
-				<input type="radio" name="answer" disabled @foreach($jawabans as $jawaban) @if($jawaban->pilihan_id == $pilihan->id) checked @endif @endforeach>
+				<input type="radio" name="answer{{ $i }}" disabled @foreach($jawabans as $jawaban) @if($jawaban->pilihan_id == $pilihan->id) checked @endif @endforeach>
 				{{ $pilihan->pilihan }} @foreach($kjawabans as $kjawaban) @if($kjawaban->pilihan_id == $pilihan->id) √ @endif @endforeach
 			</label>
 		</div>

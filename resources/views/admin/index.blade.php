@@ -105,7 +105,7 @@ $a = 0;
             @php
             $a = $a+1;
             @endphp
-            @if($ujian->repeat == "no")
+
             <div class="column is-4 has-text-centered">
                 @can('admin')
                 <a href="{{ url('admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="subtitle" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
@@ -119,28 +119,7 @@ $a = 0;
                     <canvas id="myChart{{ $a }}"></canvas>
                 </div>
             </div>
-            @else
-            <br>
-            @php
-            $count = 0;
-            foreach($nilais as $nilai){
-                if ($nilai->ujian_id == $ujian->id) {
-                    ++$count;
-                } 
-            }
-            @endphp
-            <div class="column has-text-centered">
-               @can('admin')
-               <a href="{{ url('admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="title" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
-               @endcan
-               @can('sadmin')
-               <a href="{{ url('s/admin/ujian/ujianmonitoring/'.$ujian->code) }}"><h2 class="title" style="margin-bottom:0px;">{{ $ujian->judul }}</h2></a>
-               @endcan
-               <h1>Jumlah yang mengerjakan</h1>
-               <h1 class="title is-1">{{ $count }}</h1>
-           </div>
-
-           @endif
+            
 
            @endforeach
 
@@ -148,7 +127,6 @@ $a = 0;
    </div>
 </div>
 @endif
-
 
 <div class="columns">
 

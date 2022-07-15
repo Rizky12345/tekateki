@@ -15,7 +15,7 @@ class Jawaban extends Migration
     {
         Schema::create('jawabans', function(Blueprint $table){
             $table->id();
-            $table->text('jawaban'))->nullable();
+            $table->text('jawaban')->nullable();
             $table->foreignId("soal_id");
             $table->foreignId("ujian_id");
             $table->float("point")->nullable();

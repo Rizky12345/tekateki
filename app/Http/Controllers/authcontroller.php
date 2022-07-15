@@ -30,7 +30,7 @@ class authcontroller extends Controller
         }
     }
     public function logout(){
-        AUTH::logout();
+        Auth::logout();
         return redirect('/login');
     }
     public function page(){

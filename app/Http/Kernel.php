@@ -56,6 +56,8 @@ class Kernel extends HttpKernel
      */
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
+        'sessionujian' => \App\Http\Middleware\SessionUjian::class,
+        'editstop' => \App\Http\Middleware\ujianeditstop::class,
         'accept' => \App\Http\Middleware\Accept::class,
         'level' => \App\Http\Middleware\Level::class,
         'sessionexist' => \App\Http\Middleware\SessionExist::class,

@@ -12,7 +12,7 @@
 		<div class="hero-head">
 			<div class="navbar">
 				<div class="container pt-2">
-					<strong class="title">Hujan</strong>
+					<strong class="title"><img src="{{ asset('image/cbm.png') }}" alt=""></strong>
 					<div class="navbar-menu">
 						<div class="navbar-end pt-2">
 							<strong class="pl-4 pr-4">Login</strong>

@@ -20,7 +20,7 @@
 			<div class="columns is-flex is-vcentered" style="height:120vh; width: 100%; margin: 0px;">
 				<div class="column">
 					<h1 class="title has-text-white" style="text-shadow: 2px 2px 2px #0000006b;">
-						Ujian Siswa <br> SD CBM Cipanengah Sukabumi</h1>
+						Ujian Siswa Sekolah Dasar Persemester Berbasis Website<br> SD CBM Cipanengah Sukabumi</h1>
 						<br>
 						<figure class="image is-128x128" style="display: block;margin-left: auto;margin-right: auto;">
 							<img src="{{ asset('image/cbm.png') }}">

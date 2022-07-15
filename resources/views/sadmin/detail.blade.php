@@ -54,12 +54,7 @@
 						<div class="field-body">
 							<div class="field">
 								<p class="control">
-									@can('sadmin')
 									<input class="input" type="text" placeholder="Masukkan Nama" value="{{ $user->name }}" name="name">
-									@endcan
-									@can('admin')
-									<p class="mt-1">{{ $user->name }}</p>
-									@endcan
 								</p>
 							</div>
 						</div>
@@ -73,12 +68,7 @@
 						<div class="field-body">
 							<div class="field">
 								<p class="control">
-									@can('sadmin')
 									<input class="input" type="text" placeholder="masukkan user_id"value="{{ $user->user_id }}" name="user_id">
-									@endcan
-									@can('admin')
-									<p class="mt-1">{{ $user->user_id }}</p>
-									@endcan
 								</p>
 							</div>
 						</div>
@@ -99,6 +89,57 @@
 						</div>
 					</div>
 				</div>
+				@can('admin')
+				<div class="column is-12">
+					@if($user->level != 'user')
+					<div class="field is-horizontal">
+						<div class="field-label is-normal">
+							<label class="label">WaliKelas</label>
+						</div>
+						<div class="field-body">
+							<div class="field">
+								<p class="control mt-2">
+									
+									@if($user->walikelas == "walikelas")
+									Anda Tercatat Sebagai Walikelas Kelas {{ $user->kelase->kelas }}
+									@else
+									Tidak Tercatat Sebagai Walikelas
+									@endif
+									
+								</p>
+							</div>
+						</div>
+					</div>
+					@endif
+				</div>
+				@endcan
+				@can('sadmin')
+				@if($user->level == "admin")
+				<div class="column is-12">
+					<div class="field is-horizontal">
+						<div class="field-label is-normal">
+							<label class="label">WaliKelas</label>
+						</div>
+						<div class="field-body">
+							<div class="field">
+								<p class="control mt-2">
+									<div class="control">
+										<label class="radio">
+											<input type="radio" name="walikelas" value="yes" {{ $user->walikelas == "walikelas" ? "checked" : "" }}>
+											Yes
+										</label>
+										<label class="radio">
+											<input type="radio" name="walikelas" value="no" {{ $user->walikelas != "walikelas" ? "checked" : "" }}>
+											No
+										</label>
+									</div>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				@endcan
+				@endif
 				<div class="column is-12">
 					<div class="field is-horizontal">
 						<div class="field-label is-normal">
@@ -138,24 +179,32 @@
 								<input type="text" class="is-hidden" name="level" value="{{ $user->level }}">
 								<div class="select">
 									<select name="level" disabled>
-										<option value="user" @if($user->level == 'user') selected @endif>user</option>
-										<option value="admin" @if($user->level == 'admin') selected @endif>admin</option>
-										<option value="super admin" @if($user->level == 'super admin') selected @endif>super admin</option>
+										<option value="user" @if($user->level == 'user') selected @endif>Murid</option>
+										<option value="admin" @if($user->level == 'admin') selected @endif>Guru</option>
+										<option value="super admin" @if($user->level == 'super admin') selected @endif>Administrator</option>
 									</select>
 								</div>
 								@else
 								<div class="select">
 									<select name="level">
-										<option value="user" @if($user->level == 'user') selected @endif>user</option>
-										<option value="admin" @if($user->level == 'admin') selected @endif>admin</option>
-										<option value="super admin" @if($user->level == 'super admin') selected @endif>super admin</option>
+										<option value="user" @if($user->level == 'user') selected @endif>Murid</option>
+										<option value="admin" @if($user->level == 'admin') selected @endif>Guru</option>
+										<option value="super admin" @if($user->level == 'super admin') selected @endif>Administrator</option>
 									</select>
 								</div>
 								@endif
 								
 								@endcan
 								@can('admin')
-								<p class="mt-1">{{ $user->level }}</p>
+								<p class="mt-1">
+									@if($user->level == 'user')
+									Murid
+									@elseif($user->level == 'admin')
+									Guru
+									@elseif($user->level == 'super admin')
+									Administrator
+									@endif
+								</p>
 								@endcan
 							</div>
 						</div>
@@ -183,39 +232,39 @@
 											<span class="file-name">
 												No file uploaded
 											</span>
-										
-									</div>
-									<small>jika tidak mengganti gambar, kosongkan saja</small>
-								</p>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="column is-12">
-					<div class="field is-horizontal">
-						<div class="field-label is-normal">
-							<label class="label"><button class="button">Edit</button></label>
-						</div>
-						<div class="field-body">
-							<div class="field">
 
+										</div>
+										<small>jika tidak mengganti gambar, kosongkan saja</small>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="column is-12">
+						<div class="field is-horizontal">
+							<div class="field-label is-normal">
+								<label class="label"><button class="button is-primary">Edit</button></label>
+							</div>
+							<div class="field-body">
+								<div class="field">
+
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
+
 			</div>
 
-		</div>
-
-	</form>
-</div>
-<script>
-	const fileInput = document.querySelector('#file-js-example input[type=file]');
-	fileInput.onchange = () => {
-		if (fileInput.files.length > 0) {
-			const fileName = document.querySelector('#file-js-example .file-name');
-			fileName.textContent = fileInput.files[0].name;
+		</form>
+	</div>
+	<script>
+		const fileInput = document.querySelector('#file-js-example input[type=file]');
+		fileInput.onchange = () => {
+			if (fileInput.files.length > 0) {
+				const fileName = document.querySelector('#file-js-example .file-name');
+				fileName.textContent = fileInput.files[0].name;
+			}
 		}
-	}
-</script>
-@endsection
+	</script>
+	@endsection

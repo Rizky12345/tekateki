@@ -20,26 +20,19 @@ use Illuminate\Support\Str;
 class listcontroller extends Controller
 {
   public function index(){
-    $list_umum = Ujian::where('umum','=','yes')->get();
+
     $list = Ujian::where('kelase_id','=',Auth::user()->kelase_id)->get();
     $collect = collect([]);
-    foreach($list_umum as $umum){
-      if ($collect->contains($umum->id) == false) {
-        $collect->push($umum->id);
-      }
-    }
+
     foreach($list as $li){
       if ($collect->contains($li->id) == false) {
         $collect->push($li->id);
       }
     }
     $arr = Ujian::whereIn('id',$collect)->orderBy('id','desc')->paginate(10);
-    $a = Rating::all();
-    $ratingArr = $a->pluck('ujian_id');
+    
     return view('after.list',[
       'lists'=> $arr,
-      'ratings' => $a,
-      'ratingArr' => $ratingArr,
       'title'=>'Home'
     ]);
   }

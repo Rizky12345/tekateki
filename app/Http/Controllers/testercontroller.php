@@ -33,6 +33,7 @@ class testercontroller extends Controller
     public function redirect_choice(Request $request, $code){
         $request->session()->put('accept', Str::random(30));
         $request->session()->put('code', $request->code);
+        $request->session()->put('arr', collect([]));
         $ids = Ujian::where('code', '=', session()->get('code'))->firstOrFail();
         $request->session()->put('ujian_id', $ids->id);
         $nilai = new Nilai;
@@ -45,7 +46,7 @@ class testercontroller extends Controller
         // $a = Ujian::where('code', '=', $request->code)->firstOrFail();
 
         // $soal = Soal::where('ujian_id', '=', $a->id)->firstOrFail();
-        return redirect("admin/ujian/$code/tester/".$request->session()->get('accept'));
+        return redirect("admin/ujian/$code/tester/".$request->session()->get('accept')."/tester");
     }
     public function choice(Request $request){
         $ujian_id = Ujian::where('code', '=', session()->get('code'))->firstOrFail();

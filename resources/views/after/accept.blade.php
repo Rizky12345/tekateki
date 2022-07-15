@@ -7,6 +7,8 @@
 	<div class="hero-body">
 		<div class="container has-text-centered">
 			<h1 class="title">Code: {{ $ujian->code }}</h1>
+			<p>Nama Ujian: {{ $ujian->judul }}</p>
+			<p>Tipe Ujian: {{ $ujian->type }}</p>
 			<p>Pelajaran: {{ $ujian->mapel->mapel }}</p>
 			<p>Pembuat: {{ $ujian->user->name }}</p>
 			<p>Kelas: {{ $ujian->kelase->kelas }}</p>
@@ -46,44 +48,44 @@
 			<br><br>
 			<strong>Dengan klik tombol ini anda menyetujui untuk mengerjakan ujian ini <br>	hingga selesai</strong><br><br>
 			@if($ujian->time->date_time != NULL)
-	@if($ujian->repeat == 'no')
-	@if($nilai->isEmpty())
-	@if($status == "Ujian Belum dimulai" || $status ==  "Ujian Berakhir")
-	<button class="button is-dark" disabled>Accept</button>
-	@else
-	<a href="{{ url("user/accept/choice/$ujian->code") }}" >
-		<button class="button is-dark">Accept</button>
-	</a>
-	@endif
-	@else
-	<button class="button is-dark" disabled>Accept</button>
-	<p class="has-text-danger">Kamu sudah menyelesaikan Ujian ini</p>
-	@endif
-	@else
-	@if($status == "Ujian Belum dimulai" || $status ==  "Ujian Berakhir")
-	<button class="button is-dark" disabled>Accept</button>
-	@else
-	<a href="{{ url("user/accept/choice/$ujian->code") }}" >
-		<button class="button is-dark">Accept</button>
-	</a>
-	@endif
-	@endif
-	@else
-	<a href="{{ url("user/accept/choice/$ujian->code") }}" >
-		<button class="button is-dark">Accept</button>
-	</a>
-	@endif
+			{{-- @if($ujian->repeat == 'no') --}}
+			@if($nilai->isEmpty())
+			@if($status == "Ujian Belum dimulai" || $status ==  "Ujian Berakhir")
+			<button class="button is-dark" disabled>Accept</button>
+			@else
+			<a href="{{ url("user/accept/choice/$ujian->code") }}" >
+				<button class="button is-dark">Accept</button>
+			</a>
+			@endif
+			@else
+			<button class="button is-dark" disabled>Accept</button>
+			<p class="has-text-danger">Kamu sudah menyelesaikan Ujian ini</p>
+			@endif
+			{{-- @else
+			@if($status == "Ujian Belum dimulai" || $status ==  "Ujian Berakhir")
+			<button class="button is-dark" disabled>Accept</button>
+			@else
+			<a href="{{ url("user/accept/choice/$ujian->code") }}" >
+				<button class="button is-dark">Accept</button>
+			</a>
+			@endif --}}
+			{{-- @endif --}}
+			@else
+			<a href="{{ url("user/accept/choice/$ujian->code") }}" >
+				<button class="button is-dark">Accept</button>
+			</a>
+			@endif
 		</div>
 	</div>
 </div>
 
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#fff" fill-opacity="1" d="M0,96L30,96C60,96,120,96,180,85.3C240,75,300,53,360,85.3C420,117,480,203,540,245.3C600,288,660,288,720,277.3C780,267,840,245,900,213.3C960,181,1020,139,1080,138.7C1140,139,1200,181,1260,208C1320,235,1380,245,1410,250.7L1440,256L1440,320L1410,320C1380,320,1320,320,1260,320C1200,320,1140,320,1080,320C1020,320,960,320,900,320C840,320,780,320,720,320C660,320,600,320,540,320C480,320,420,320,360,320C300,320,240,320,180,320C120,320,60,320,30,320L0,320Z"></path></svg>
 <footer class="footer has-text-centered" style="background: white;">
-		<div class="content ">
-			<p>
-				<strong>kerja praktik</strong> From <a href="https://jgthms.com">SD NEGERI CBM Cipanengah</a>. The source code is licensed. App Status
-				<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">DEMO</a>.
-			</p>
-		</div>
-	</footer>
+	<div class="content ">
+		<p>
+			<strong>kerja praktik</strong> From <a href="https://jgthms.com">SD NEGERI CBM Cipanengah</a>. The source code is licensed. App Status
+			<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">DEMO</a>.
+		</p>
+	</div>
+</footer>
 @endsection

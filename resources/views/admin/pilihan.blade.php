@@ -131,9 +131,16 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 		<div class="">
 			<div class="card columns is-mobile is-multiline is-12">
 				@for($i=1; $i<$count;$i++)
-				<a href="{{ url("s/admin/ujian/".$ujian->code."/tester/".session()->get('accept')."?page=$i") }}" class="column card is-1-desktop is-3-mobile has-text-centered pt-5 pb-5">
+				@can('sadmin')
+				<a href="{{ url("s/admin/ujian/".$ujian->code."/tester/".session()->get('accept')."/tester?page=$i") }}" class="column card is-1-desktop is-3-mobile has-text-centered pt-5 pb-5">
 					{{ $i }}
 				</a>
+				@endcan
+				@can('admin')
+				<a href="{{ url("admin/ujian/".$ujian->code."/tester/".session()->get('accept')."/tester?page=$i") }}" class="column card is-1-desktop is-3-mobile has-text-centered pt-5 pb-5">
+					{{ $i }}
+				</a>
+				@endcan
 				@endfor
 			</div>
 		</div>
@@ -148,12 +155,12 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 				<div class="box is-3 has-text-centered">
 					<p class="title">Sudah selesai?</p>
 					@can('admin')
-<a href="{{ url("admin/ujian/".$ujian->code."/tester/".session()->get('accept')."/destroy") }}">
+<a href="{{ url("admin/ujian/".$ujian->code."/tester/".session()->get('accept')."/destroy/tester") }}">
 						<button class="button is-danger">Selesai</button>
 					</a>
 					@endcan
 					@can('sadmin')
-					<a href="{{ url("s/admin/ujian/".$ujian->code."/tester/".session()->get('accept')."/destroy") }}">
+					<a href="{{ url("s/admin/ujian/".$ujian->code."/tester/".session()->get('accept')."/destroy/tester") }}">
 						<button class="button is-danger">Selesai</button>
 					</a>
 					@endcan
@@ -197,7 +204,6 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 
 					url: '{{ url("admin/ujian/".$ujian->code."/tester/".session()->get('accept')."/post") }}',
 					data: {
-						'jawaban': jawaban,
 						'id': id,
 						'nilai_id': nilai_id,
 						'pilihan_id': pilihan_id
@@ -343,7 +349,7 @@ $a = date("Y-m-d H:i:s", strtotime("+{$ujian->time->time} minutes", strtotime($n
 				if (sisa < 0) {
 					clearInterval(time);
 					document.getElementById("countdown").innerHTML = "EXPIRED";
-					window.location = "{{ url('user/accept/'.session()->get("accept").'/destroy') }}";
+					window.location = "{{ url("s/admin/ujian/$ujian->code/tester/".session()->get("accept").'/destroy/tester') }}";
 				}
 			},1000);
 
